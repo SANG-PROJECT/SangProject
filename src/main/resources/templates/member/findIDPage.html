@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- ~{} : templates를 가르킨다 , ::header => header태그범위안 내용을 가져온다. -->
+<th:block th:insert="~{../templates/header.html::header}"></th:block>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+	#emailForm{
+	display: none;
+	}
+	#telFind{
+	display: none;
+	}
+</style>
+</head>
+<body>
+	<div style="width: 100%; height: 300px; margin:0 auto;" >
+		<input style="text-align: left;" type="radio" value="1" name="Chk" id="Chk1"><label for="Chk1">가입한 이메일로 찾기</label><p>
+		<input class="form-control" id="emailForm" type="text" name="email" required="required" autofocus="autofocus" placeholder="가입시 입력한 이메일">
+		<hr>
+		<input type="radio" value="2" name="Chk" id="Chk2"><label for="Chk2">가입한 휴대폰으로 찾기</label>
+		<div id="telFind">
+			<input class="form-control" type="text" name="name_nicname" required="required" placeholder="이름또는 닉네임"><p>
+			<input class="form-control" type="tel" name="tel" required="required" placeholder="휴대폰번호">
+		</div>
+		<hr>
+		<button class="btn btn-success" type="button">아이디 찾기</button>
+	</div>
+	
+<script type="text/javascript">
+	// 페이지 로드될 때 체크 상태 확인 및 이메일 입력 폼 표시
+	window.onload = function() {
+		var Chk1 = document.getElementById("Chk1");
+		if (Chk1.checked) {
+			document.getElementById("emailForm").style.display = "block";
+		}
+	};
+	
+	// 라디오 버튼 변경 시 이벤트 처리
+	document.getElementById("Chk1").addEventListener("change", function() {
+		if (this.checked) {
+			document.getElementById("emailForm").style.display = "block";
+			document.getElementById("telFind").style.display = "none";
+		} 
+	});
+	
+	document.getElementById("Chk2").addEventListener("change", function() {
+		if (this.checked) {
+			document.getElementById("emailForm").style.display = "none";
+			document.getElementById("telFind").style.display = "block";
+		} 
+	});
+
+</script>
+</body>
+</html>
