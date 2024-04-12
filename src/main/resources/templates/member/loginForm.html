@@ -150,6 +150,13 @@
         }
       	#modal_join_btn:hover{
       		cursor: pointer;
+    		transform: scale(1.05); /* 약간의 확대 효과 */
+    		background-color: skyblue; /* 하늘색 배경 */
+      	}
+      	#modal_find_btn:hover{
+      		cursor: pointer;
+    		transform: scale(1.05); /* 약간의 확대 효과 */
+    		background-color: skyblue; /* 하늘색 배경 */
       	}
         
         #modal_close_btn{
@@ -254,7 +261,7 @@
 <div id="modal_login">
     <div class="modal_content">
         <label class="text-primary" style="font-size: 30px;">로그인</label><img id="modal_close_btn" alt="" th:src="@{/images/close.png}">
-        <form action="login" method="post" name="frm">
+        <form action="login" method="post" name="loginForm">
        		<input class="form-control" type="text" name="id" required="required" autofocus="autofocus" placeholder="아이디" style="width: 100%;">
        		<input class="form-control" type="password" name="password" required="required" placeholder="암호" style="width: 100%;"><br>
        		<span style="float: left; display:flex; align-items: center;">
@@ -296,11 +303,11 @@
     <div style="font-size:25px; font-weight: bold; text-align: center;">약관동의 <img id="modal_close_btn3" alt="" th:src="@{/images/close.png}"></div><p>
 	    <div>
 	    	<div><input type="checkbox" id="chkAll"><label for="chkAll" style="float: left;">이용약관, 개인정보 수집 및 이용에 모두 동의합니다.</label></div><p>
-	    	<div><input type="checkbox"><span>이용약관 동의 <span style="color: red;"> (필수)</span></div><p>
+	    	<div><input type="checkbox" id="chkTerms"><span>이용약관 동의</span> <span style="color: red;"> (필수)</span></div><p>
 	    	<th:block th:insert="~{member/terms.html}"></th:block> <!-- terms.html : 약관동의 BOX -->
-	    	<div><input type="checkbox"><span>개인정보 수집 및 이용동의<span style="color: red;"> (필수)</span></span></div><p>
+	    	<div><input type="checkbox" id="chkPrivacy"><span>개인정보 수집 및 이용동의<span style="color: red;"> (필수)</span></span></div><p>
 	    	<th:block th:insert="~{member/terms2.html}"></th:block> <!-- terms2.html : 약관동의 BOX -->
-	    	<div><input type="checkbox"><span>만 14세 이상입니다.<span style="color: red;"> (필수)</span></span></div><p>
+	    	<div><input type="checkbox" id="chkAge"><span>만 14세 이상입니다.<span style="color: red;"> (필수)</span></span></div><p>
 	    </div>
 	    <div style="width:90%; margin:0 auto; text-align: center;">
 	    	<a class="btn btn-danger" th:href="loginForm">취소</a>
@@ -335,9 +342,9 @@
     <div class="modal_inputForm">
     	<div style="font-size:25px; font-weight: bold; text-align: center; margin-left: 15px;">회원가입<img id="modal_close_btn5" alt="" th:src="@{/images/close.png}"></div>
     	
-    	<form action="">
+    	<form action="join" name="joinForm" method="post" enctype="multipart/form-data" onsubmit="return passChk()">
     		<div id="fileupload_profile_img" class="fileupload_profile_img" accept="image/*">
-			    <input type="file" id="fileInput" style="display: none;">
+			    <input type="file" name="file" id="fileInput" style="display: none;">
 			    <img id="previewImage" src="" alt="Preview" style="display: none; width: 100px; 
 			    height: 100px; border-radius: 50%;"> 
 			</div>
@@ -348,7 +355,8 @@
 				</button>
 			</div>
 			<span>계정</span>
-			<input class="form-control" type="text" name="email" required="required" autofocus="autofocus" placeholder="이메일">
+			<input class="form-control" type="text" name="id" required="required" autofocus="autofocus" placeholder="아이디">
+			<input class="form-control" type="text" name="email" required="required" placeholder="이메일">
 			<input class="form-control" type="password" name="password" required="required" placeholder="비밀번호">
 			<input class="form-control" type="password" name="password2" required="required" placeholder="비밀번호확인">
 			<span>이름</span>
@@ -395,6 +403,13 @@
     	document.getElementById("modal_agree").style.display="block";
     }
     document.getElementById("joinBtn2").onclick = function(){
+    	let chkTerms = document.getElementById("chkTerms").checked;
+        let chkPrivacy = document.getElementById("chkPrivacy").checked;
+        let chkAge = document.getElementById("chkAge").checked;
+        if(!chkTerms || !chkPrivacy || !chkAge){
+        	alert("모든 필수 항목에 동의해야 가입 할 수 있습니다");
+        	return; // 실행취소
+        }
     	document.getElementById("modal_agree").style.display="none";
     	document.getElementById("modal_input").style.display="block";
     }
@@ -462,6 +477,16 @@
         document.getElementById('fileInput').click(); // 파일 선택 창 열기
     });
     
+    /* 패스워드검사 */
+    function passChk(){
+    	if(joinForm.password.value != joinForm.password2.value){
+    		alert("암호와 암호확인이 다릅니다");
+    		joinForm.password.value = "";
+    		joinForm.password2.value = "";
+    		joinForm.password.focus();
+    		return false;
+    	}else true;
+    }
 
 </script>
 </body>

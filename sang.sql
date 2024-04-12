@@ -1,3 +1,6 @@
+--실험
+select * from member;
+
 -- 테이블 삭제
 drop table attend cascade constraints;
 drop table staff cascade constraints;
@@ -14,16 +17,20 @@ drop table member cascade constraints;
 -- 회원
 create table member (
 	id varchar2(20) primary key, 	-- 아이디
-	password varchar2(30),			-- 암호
+	password varchar2(100),			-- 암호 [변경2 100자리 => 암호화]
 	name varchar2(20),				-- 이름
 	tel varchar2(20),				-- 연락처
 	email varchar2(50),				-- 이메일
+	image varchar2(200),			-- [변경1 회원이미지 컬럼추가]
 	reg_date date,					-- 가입일자
 	del char(1) default 'N',		-- 회원삭제
 	snt char(1) default 'N',		-- 수강생/강사 구분
 	admin char(1) default 'N'		-- 관리자 구분
 );
 select * from member;
+select * from member where email = 'zzx9603@naver.com';
+alter table member modify password varchar2(100); -- 변경에따른 암호 수정
+select * from member where name = '황재기' and tel = '01077343854';
 
 -- 강의
 create table academy (
@@ -36,7 +43,7 @@ create table academy (
 	a_name varchar2(20),					-- 강사
 	place varchar2(50),						-- 장소
 	request varchar2(50),					-- 접수
-	onoff char(1) default 'N'				-- 온-오프라인 수업 구분
+	onoff char(1) default 'N',				-- 온-오프라인 수업 구분
 	image varchar2(200),					-- 섬네일
 	detail_img varchar2(200),				-- 상세 이미지
 	detail_txt varchar2(2000),				-- 상세 본문
@@ -45,7 +52,7 @@ create table academy (
 	id varchar2(20),						-- 아이디(fk)
 	constraint fk_academy_id foreign key(id) references member(id)
 );
-
+select * from academy;
 -- 장바구니
 create table cart (
 	c_no number(20) primary key,				-- 장바구니 번호

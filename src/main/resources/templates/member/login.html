@@ -1,46 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- ~{} : templates를 가르킨다 , ::header => header태그범위안 내용을 가져온다. -->
+<th:block th:insert="~{../templates/header.html::header}"></th:block>
 <head>
-    <title>Image Upload Preview</title>
+<title>Image Upload Preview</title>
 </head>
 <body>
-
-<div id="fileupload_profile_img" class="fileupload_profile_img" accept="image/*">
-    <input type="file" id="fileInput" style="display: none;">
-    <img id="previewImage" src="#" alt="Preview" style="display: none; max-width: 50px; max-height: 50px;">
-    <button type="button" id="uploadButton">이미지 업로드</button>
+<div th:if="${result} > 0">
+	<script type="text/javascript">
+		alert("로그인 성공! 환영합니다! " + "[[${name}]] 님!");
+		location.href="main";
+	</script>
 </div>
-
-<script>
-    // 이미지 업로드 버튼 클릭 이벤트
-    document.getElementById('fileupload_profile_img').addEventListener('click', function () {
-        document.getElementById('fileInput').click(); // 파일 선택 창 열기
-    });
-
-    // 파일 선택 시 미리보기 및 업로드
-    document.getElementById('fileInput').addEventListener('change', function () {
-        var file = this.files[0]; // 선택한 파일 가져오기
-
-        if (file) {
-            var reader = new FileReader(); // FileReader 객체 생성
-
-            // 파일 읽기가 완료되었을 때의 이벤트 처리
-            reader.onload = function (e) {
-                var imgElement = document.getElementById('previewImage');
-                imgElement.src = e.target.result; // 이미지 미리보기에 데이터 설정
-                imgElement.style.display = 'block'; // 이미지 미리보기 표시
-            };
-
-            // 파일을 읽어서 데이터 URL로 설정
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // 이미지 업로드 버튼 클릭 시 파일 선택 창 열림
-    document.getElementById('uploadButton').addEventListener('click', function () {
-        document.getElementById('fileInput').click();
-    });
-</script>
+<div th:if="${result} == 0">
+	<script type="text/javascript">
+		alert("아이디 또는 암호가 일치하지 않습니다.");
+		history.back();
+	</script>
+</div>
+<div th:if="${result} < 0">
+	<script type="text/javascript">
+		alert("존재하지 않는 아이디입니다.");
+		history.back();
+	</script>
+</div>
 
 </body>
 </html>
