@@ -17,4 +17,5 @@ public class Review {
 	private Date r_date;		// 등록 일자
 	private String id;
 	private int a_no;			// 강의 번호 (fk)
+	private int ct_no;
 }

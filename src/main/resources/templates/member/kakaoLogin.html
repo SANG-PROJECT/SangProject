@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- ~{} : templates를 가르킨다 , ::header => header태그범위안 내용을 가져온다. -->
+<th:block th:insert="~{../templates/header.html::header}"></th:block>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<div th:if="${result} > 0">
+    <script type="text/javascript">
+        alert("환영합니다! " + "[[${kakao.nickName}]] 님");
+        let userID = "[[${kakao.userID}]]";
+        let nickName = "[[${kakao.nickName}]]";
+        let profile_image = "[[${kakao.profile_image}]]";
+        let thumbnail_image = "[[${kakao.thumbnail_image}]]"; 
+        location.href="kakaomain?userID=" + userID + "&nickName=" + nickName + "&profile_image=" + profile_image + "&thumbnail_image=" + thumbnail_image;
+    </script>
+</div>
+<div th:if="${result} == 0">
+	<script type="text/javascript">
+		alert("사용자정보 처리중 에러발생")
+		history.back();
+	</script>
+</div>
+<div th:if="${result} < 0">
+	<script type="text/javascript">
+		alert("카카오 로그인 요청실패");
+		history.back();
+	</script>
+</div>
+</body>
+</html>

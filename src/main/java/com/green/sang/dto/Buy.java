@@ -15,4 +15,7 @@ public class Buy {
 	private int c_count;	// 장바구니 수량
 	private int a_no;		// 강의 번호 (fk)
 	private String id;
+	
+	//구매이미지받아서 처리위해 추가
+	private String image;
 }

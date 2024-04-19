@@ -9,17 +9,49 @@
 	<select id="selectEmail" parameterType="string" resultType="member">
 		select * from member where email = #{email}
 	</select>
+
+	<select id="select_PW_Email" parameterType="map" resultType="member">
+		select * from member where email = #{email} and id = #{id}
+	</select>
 	
 	<select id="selectNameToTel" parameterType="map" resultType="member">
 		select * from member where name = #{name} and tel = #{tel}
+	</select>
+	
+	<!-- 구매내역 조회 -->
+	<select id="selectBuyList" parameterType="string" resultType="Buy">
+		select * from Buy where id = #{id}
+	</select>
+	
+	<!-- 구매한 아카데미 조회 -->
+	<select id="selectBuyInfo" parameterType="integer" resultType="Academy">
+		select * from Academy where a_no = #{a_no}
+	</select>
+	
+	<!-- 구매번호로 구매내역조회 -->
+	<select id="selectBuy">
+		select * from Buy where b_no = #{b_no}
+	</select>
+	
+	<!-- 구매번호로 구매한 이미지조회 -->
+	<select id="selectImg">
+		select * from Buy where b_no = #{b_no}
 	</select>
 	
 	<insert id="insert" parameterType="member">
 		insert into member values(#{id},#{password},#{name},#{tel},#{email},#{image},sysdate,'n','n','n')
 	</insert>
 	
-	
 	<update id="updatePass" parameterType="member">
 		update member set password = #{password} where id = #{id}
 	</update>
+	
+	<update id="update" parameterType="member">
+		update member set name = #{name} , password = #{password} , tel = #{tel} where id = #{id}
+	</update>
+	
+	<update id="delete" parameterType="string">
+		update member set del = 'y' where id = #{id}
+	</update>
+	
 </mapper>

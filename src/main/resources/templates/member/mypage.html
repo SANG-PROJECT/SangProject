@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}">
+<th:block th:insert="~{/header.html::header}"></th:block>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<head>
+<style type="text/css">
+body{
+		background: lightgray;
+	}
+	.active{
+		border-bottom: 3px solid blue;
+	}
+	.left-menu{
+		width: 200px;
+		position: relative;
+		top:90px;
+	}
+	.left-menu>li{
+		padding: 10px;
+		width: 100%;
+	}
+	.left-menu>li:hover{
+		transform:scale(1.1);
+		transition:transform 0.1s ;
+	}
+	.left-menu>li>a{
+		text-decoration: none;
+		color:black;
+	}
+	.contai{
+        justify-content: space-between; /* 요소를 양쪽 끝으로 배치 */
+        margin: 0 auto;
+	}
+	.cancleContai{
+		justify-content: space-between; /* 요소를 양쪽 끝으로 배치 */
+        margin: 0 auto;
+	}
+	.user_list {
+		position:relative;
+		left:200px;
+		top:-200px;
+		width:1000px;
+        display: block;
+        align-items: center; /* 요소를 수직으로 중앙 정렬 */
+        background: lightgray;
+        padding:20px;
+    }
+    .profileImg{ /* 사용자 이미지 */
+    	width:80px;
+    	height:80px;
+    	border-radius: 50%;
+    	position: relative;
+    	top:35px;
+    	left:20px;
+    }
+    .orderImg{ /* 사용자 이미지 */
+    	width:100px;
+    	height:100px;
+    	position: relative;
+
+    }
+    .user_list img:nth-child(2){ /* 사용자 마이페이지 구매사진 */
+    	width:400px;
+    	height:400px;
+    	position: relative;
+    	top:35px;
+    	left:20px;
+    }
+    .user_info {
+        display: flex;
+        flex-direction: column; /* 요소를 수직 방향으로 배치 */
+   		position: relative;
+   		top:40px;
+   		left:50px;
+    }
+    .user_info > span {
+        margin-bottom: 5px; /* 텍스트 사이의 간격 조정 */ 
+    }
+    .order , .wish_list , .cancel , .qna , .cancleForm{ /* 메뉴초기 display none */
+    	display:none;
+    	position: relative;
+    	top:100px;
+    	float: left;
+    }
+    .order_list{
+    	position: relative;
+    	top:100px;
+    	float: left; 
+    }
+    /* 업데이트 모달 스타일 */
+    #update_Modal{
+		display: none; /* 초기에는 보이지 않도록 설정 */
+		position: fixed; 
+		z-index: 1; 
+		padding-top: 100px; 
+		left: 0;
+		top: 0;
+		width: 100%; 
+		height: 100%;
+		overflow: auto; 
+		background-color: rgba(0,0,0,0.4);
+    }
+    .modal_content {
+		width: 400px;
+		height: auto;
+		margin: 50px auto;
+		padding: 20px 10px;
+		background: #fff;
+		border: 2px solid #666;
+	}
+    .modal_content2 {
+		width: 600px;
+		height: auto;
+		margin: 50px auto;
+		padding: 20px 10px;
+		background: #fff;
+		border: 2px solid #666;
+	}
+	#update_close_btn {
+		width: 10px; 
+		position: relative;
+		left: 370px;
+		bottom: 65px;
+	}
+	#update_close_btn:hover {
+		cursor: pointer;
+	}
+	#update_close_btn2{
+		width: 10px; 
+		position: relative;
+		left: 220px;
+		bottom: 65px;
+	}
+	#update_close_btn2:hover {
+		cursor: pointer;
+	}
+	#delete_close_btn {
+		width: 10px; 
+		position: relative;
+		left: 565px;
+		bottom: 65px;
+	}
+	#delete_close_btn:hover {
+		cursor: pointer;
+	}
+	/* 회원탈퇴 모달 스타일 */
+	#delete_Modal{
+		display: none; /* 초기에는 보이지 않도록 설정 */
+		position: fixed; 
+		z-index: 1; 
+		padding-top: 100px; 
+		left: 0;
+		top: 0;
+		width: 100%; 
+		height: 100%;
+		overflow: auto; 
+		background-color: rgba(0,0,0,0.4);
+	}
+	.cancle_Box > h6 {
+		border:1px solid gray; 
+		padding: 5px;
+		text-decoration: none;
+		color: black;
+	}
+	
+	/* 신청예약조회 */
+	.cancle_Box h6:hover{
+		cursor: pointer;
+   		border: 2px solid blue;
+    	transition: border-color 0.3s ease; /* 테두리 색상에 대한 부드러운 전환 */
+	}
+</style>
+
+<script type="text/javascript">
+$(function(){
+    // 페이지 로드 시 실행되는 함수
+    $(document).ready(function(){
+        // 링크에 저장된 menu 값을 가져옴
+        var menuValue = $("#menuItem").val();
+        
+        // menu 값에 해당하는 ID를 가진 태그에 클래스를 추가
+        $("#" + menuValue).addClass("active");
+        $("." + menuValue).css("display","block");
+        
+     	 //기본이미지
+    	var imgElement = document.getElementById('previewImage2');
+    	imgElement.src = "upload/[[${member.image}]]" // 이미지 URL을 설정하여 이미지를 미리보기에 표시
+    	imgElement.style.display = 'block'; // 이미지 표시
+    });
+
+	// 정보 수정 버튼 클릭 시 모달 보이기
+	$("#update").click(function(){
+		$("#menuItem").val("update");
+		var menuValue = $("#menuItem").val();
+	        
+	    // menu 값에 해당하는 ID를 가진 태그에 클래스를 추가 
+	    $("#" + menuValue).addClass("active");
+	    //div 안보이기
+	    $("#order").removeClass("active");
+	    $(".order").css("display","none");
+	    $("#wish_list").removeClass("active");
+	    $(".wish_list").css("display","none");
+	    $("#cancel").removeClass("active");
+	    $(".cancel").css("display","none");
+	    $("#qna").removeClass("active");
+	    $(".qna").css("display","none");
+	    $("." + menuValue).css("display","block");
+		$("#update_Modal").css("display","block");
+		$("#delete").removeClass("active");
+	});
+	//이미지변경 아이콘클릭시 input file실행
+	$(document).on('click','#updateImgButton', function(){
+		$("#updateFile").click();
+	});
+	
+	//파일 선택 시 미리보기 및 업로드
+	$(document).on('change','#updateFile', function(){
+		var file = this.files[0]; // 선택한 파일 가져오기
+		
+		if (file) {
+			var reader = new FileReader(); // FileReader 객체 생성
+			
+			// 파일 읽기가 완료되었을 때의 이벤트 처리
+			reader.onload = function(e) {
+				var imgElement = document.getElementById('previewImage2');
+				imgElement.src = e.target.result; // 이미지 미리보기에 데이터 설정
+				imgElement.style.display = 'block'; // 이미지 미리보기 표시
+			};
+			
+			// 파일을 읽어서 데이터 URL로 설정
+			reader.readAsDataURL(file);
+		};
+	});
+	
+	//모달 x버튼 클릭시 Modal감추기
+	document.getElementById("update_close_btn").onclick = function() {
+		document.getElementById("update_Modal").style.display = "none";
+	}
+	
+	//회원탈퇴 버튼 클릭시
+	$("#delete").click(function(){
+		//item을 delete로변경
+		$("#menuItem").val("delete");
+		var menuValue = $("#menuItem").val();
+		
+		$("#"+menuValue).addClass("active");
+		//div 안보이기
+	    $("#order").removeClass("active");
+	    $(".order").css("display","none");
+	    $("#wish_list").removeClass("active");
+	    $(".wish_list").css("display","none");
+	    $("#cancel").removeClass("active");
+	    $(".cancel").css("display","none");
+	    $("#qna").removeClass("active");
+	    $(".qna").css("display","none");
+	    $("." + menuValue).css("display","block");
+		$("#delete_Modal").css("display","block");
+		$("#update").removeClass("active");
+		
+	});
+	
+	//회원탈퇴 모달 x버튼 클릭시 Modal감추기
+	document.getElementById("delete_close_btn").onclick = function() {
+		document.getElementById("delete_Modal").style.display = "none";
+	}
+	
+	function passChk(){
+		if(updatefrm.password.val() != updatefrm.password2.val()){
+			alert("암호와 암호확인이 같지않습니다.");
+			history.back();
+		}
+	}
+});
+
+
+</script>
+</head>
+<body>
+	<div layout:fragment="content" style="background: lightgray;">
+		<input type="text" th:value="${menu}" id="menuItem">
+	
+		<div class="contai" style="width:1200px; height: 1200px;">
+			<ul class="left-menu">
+				<li><a th:href="@{mypage(menu='order')}" id="order">신청/예약 조회</a>
+				
+				<li><a th:href="@{mypage(menu='wish_list')}" id="wish_list">위시 리스트</a>
+				
+				<li><a th:href="@{mypage(menu='cancel')}" id="cancel">취소 조회</a>
+				
+				<li><a th:href="@{mypage(menu='qna')}" id="qna">1:1 문의</a>
+				<li><a href="javascript:void(0);"id="update">정보 수정</a>
+				<li><a href="javascript:void(0);"id="delete">회원 탈퇴</a>
+			</ul>
+			
+			<div class="user_list">
+				<div style="background: white; height: 150px;">
+				<img class="profileImg" alt="프로필사진" th:src="@{'/upload/'+${member.image}}" style="float: left;">
+				<div class="user_info">
+					<span>[[${member.name}]] 님 안녕하세요</span><p>
+					<span>누적금액 : 0원</span>
+				</div>
+				</div>
+				<div class="order">
+					<h6 style="text-align: left; font-weight: bold;">신청조회</h6>
+					<!-- 신청 및 예약이 있으면 조회후 보여주는 코드작성 -->
+					<div th:if="${academyList} == null">주문내역이 없습니다</div>
+					<div th:if="${academyList} != null" style="display: flex; flex-wrap: wrap;"><!-- 너비이상넘어가면 아래로내려옴 -->
+						<div th:id="'academy_'+${academy.a_no}" th:each = "academy : ${academyList}">
+							<div style="display: flex; align-items: center;">
+								<h6>주문번호 : <b style="color: blue;">[[${academy.b_no}]]</b></h6>
+								<h6 style="position: relative; left: 700px;">주문일자 : [[${academy.b_date}]]</h6>
+							</div>
+							<div style="margin-bottom:30px; background: white; width: 960px; height: 100px;">
+								<div style="display: flex; align-items: center;">
+									<img class="orderImg" alt="디테일이미지" th:src="@{'/images/academy/'+${academy.image}}"><p>
+									<div style="margin-left: 20px;">
+										<h6>[[${academy.title}]]</h6>
+										<h6>[[${academy.intro}]]</h6>
+										<h6>[[${academy.price}]]원/[[${academy.c_count}]]개</h6>
+									</div>
+									<div th:if="${academy.cancle} == 'n'" style="display: flex; align-items: center;">
+										<div>
+											<h6 style="margin-left: 50px; color: blue;">신청 완료</h6><!-- cancle값사용 -->
+										</div>
+										<div class="cancle_Box"style="margin-left: 180px; margin-top: 10px;">
+											<a th:href="@{mypage(menu='cancleForm',b_no=${academy.b_no})}">취소하기</a>
+										</div>
+									</div>
+									<div th:if="${academy.cancle} == 'y'" style="display: flex; align-items: center;">
+										<div>
+											<h6 style="margin-left: 50px; color: red;">취소 요청</h6><!-- cancle값사용 -->
+										</div>
+										<div class="cancle_Box"style="margin-left: 180px; margin-top: 10px;">
+											<h6 id="cancle_Detail_Btn">취소상세</h6>
+											<h6 id="cancle_remove_Btn">취소철회</h6>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="wish_list">
+					<h6 style="text-align: left; font-weight: bold;">위시리스트</h6>
+					<!-- 신청 및 예약이 있으면 조회후 보여주는 코드작성 -->
+					<div>주문내역이없습니다</div>
+				</div>
+				
+				<div class="cancel">
+					<h6 style="text-align: left; font-weight: bold;">취소조회</h6>
+					<!-- 신청 및 예약이 있으면 조회후 보여주는 코드작성 -->
+					<div>주문내역이없습니다</div>
+				</div>
+				
+				<div class="qna">
+					<h6 style="text-align: left; font-weight: bold;">1:1문의게시판</h6>
+					<!-- 신청 및 예약이 있으면 조회후 보여주는 코드작성 -->
+					<div>주문내역이없습니다</div>
+				</div>
+				
+				<!-- 신청 취소버튼 클릭시 보여지는 화면 -->
+				<div class="cancleForm">
+					<div th:if="${buy} == null">취소할 주문이 없습니다</div>
+					<div th:if="${buy} != null" style="height: 100%;" >
+						<h6 style="text-align: left; font-weight: bold;">주문 취소요청 : <b style="color: blue">[[${buy.b_no}]]</b></h6>
+						<div style="background: white; width: 450px; height: 200px;">
+							<span style="position: relative; left: 10px; top:15px;">
+								<p>
+									주문하신 상품 단위로 취소요청이 가능합니다<br>
+									상품이 발송되기 전에 취소요청을 하실 수 있습니다.
+								</p>
+								<p>
+									<b style="color: red">
+									단, 상품을 이미 발송한 경우 취소처리 거부될 수 있습니다<br>
+									쿠폰을 사용한 주문을 취소/반품하여 쿠폰 사용이 취소된 경우<br> 
+									유효기간이	경과하지 않았다면 <br>
+									반환되어 다시 사용이 가능합니다.<br>
+									(쿠폰의 경우 모든 상품을 취소/반품해야 반환됩니다.)
+									</b>
+								</p>
+							</span>
+							
+						</div>
+						<p>
+						<div style="background: white; width: 450px; height: 350px;">
+							<div style="margin: 20px; position: relative; top: 30px;">
+								<h3><b>취소사유 선택</b></h3>
+								<select class="form-select">
+									<optgroup label="취소사유선택">
+										<option><b>단순 변심</b>
+										<option>강의정보 상이
+										<option>강의일정 변경
+										<option>재결제(동일 강의)
+										<option>재결제(다른 강의)
+										<option>중도 환급
+										<option>폐강
+										<option>기타
+									</optgroup>
+								</select>
+								<div style="margin-top: 10px;text-align: center;">
+									<textarea class="form-control" rows="5" ></textarea>
+									<input type="submit" name="주문취소" style="background: blue; color: white; width: 100px;height: 50px; margin-top: 10px; ">
+								</div>
+							</div>
+						</div>
+						<div style="background: white; width: 480px; height: 350px;
+						position:absolute;  left: 480px; top:28px;">
+							<h3><b>취소 상품</b></h3>
+							<input type="checkbox"><img alt="상품이미지" th:src="@{/images/academy/buy.image}">
+						
+						</div>
+						<div style="background: white; width: 480px; height: 430px;
+						position: absolute; left: 480px; top:400px;">
+						
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		
+			
+			<!-- 정보수정 모달 -->
+			<div id="update_Modal">
+			<div class="modal_content">
+				<h2 style="text-align: center;">정보수정</h2>
+				<img id="update_close_btn" alt="" th:src="@{/images/close.png}">
+				<form action="update" name="updatefrm" method="post" enctype="multipart/form-data" onsubmit="return passChk()">
+					<input type="hidden" name="id" th:value="${member.id}">
+					<div id="fileupload_profile_img" class="fileupload_profile_img"	accept="image/*">
+						<input type="file" name="file" id="updateFile" style="display: none;"> 
+						<img id="previewImage2" src="" alt="Preview" style= " width: 100px; height: 100px; border-radius: 50%;">
+					</div>
+						<!-- 이미지추가하여 id부여 -->
+					<div style="position: relative; width:100%; left: 210px; bottom: 30px;">
+						<button type="button" id="updateImgButton" style="background: white; border-radius: 50%;">
+							<i class="bi bi-camera"></i>
+						</button>
+					</div>
+					<span>계정정보 변경</span>
+				
+					<input class="form-control" type="text" th:value="${member.id}" disabled="disabled">
+					<input class="form-control" type="password" name="password" required="required" placeholder="변경할 비밀번호를 입력하세요">
+					<input class="form-control" type="password" name="password2" required="required" placeholder="비밀번호 확인">
+					<span>이름</span>
+					<input class="form-control" type="text" name="name" th:value="${member.name}">
+					<span>연락처</span>
+					<input class="form-control" type="tel" name="tel" th:value="${member.tel}">
+					<input class="form-control" type="submit" value="변경하기" style="background: blue; color: white;" >
+				</form>
+			</div>
+			</div>
+			<!-- 회원탈퇴 모달 -->
+			<div id="delete_Modal">
+				<div class="modal_content2">
+					<!-- 여기에 모달 내용을 추가하세요 -->
+					<h2 style="text-align: center;">회원탈퇴</h2>
+					<img id="delete_close_btn" alt="" th:src="@{/images/close.png}">
+					<div style="margin: 50px 10px;">
+						<span style="text-align: left;">가입된 회원정보가 모두 삭제됩니다. 작성하신 게시물은 삭제되지 않습니다.<br>
+						탈퇴 후 같은 계정으로 재가입 시 기존에 가지고 있던 적립금은 복원되지 않으며,<br>
+						사용 및 다운로드 했던 쿠폰도 사용 불가능합니다.<br>
+						회원 탈퇴를 진행 하시겠습니까?
+						</span>
+					</div>
+					<p>
+					<div style="text-align: center;">
+						<a href="" 
+						style="background: white; color: black; border: 1px solid gray; padding: 10px;" id="cancle">취소</a>
+						<a th:href="@{delete(id=${member.id})}" 
+						style="background: blue; color:white; border: 1px solid blue; padding: 10px;"  id="">탈퇴하기</a>
+					</div>
+				</div>
+			</div>
+			<!-- 취소상세 모달 -->
+			<div id="cancle_M">
+			
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

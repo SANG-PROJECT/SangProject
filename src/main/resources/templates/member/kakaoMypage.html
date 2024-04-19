@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}">
+<th:block th:insert="~{/header.html::header}"></th:block>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+	body{
+		background: lightgray;
+	}
+	.active{
+		border-bottom: 3px solid blue;
+	}
+	.left-menu{
+		width: 200px;
+		position: relative;
+		top:90px;
+	}
+	.left-menu>li{
+		padding: 10px;
+		width: 100%;
+	}
+	.left-menu>li:hover{
+		transform:scale(1.1);
+		transition:transform 0.1s ;
+	}
+	.left-menu>li>a{ 
+		text-decoration: none;
+		color:black;
+	}
+	.contai{
+        justify-content: space-between; /* 요소를 양쪽 끝으로 배치 */
+        margin: 0 auto;
+	}
+	.user_list {
+		position:relative;
+		left:200px;
+		top:-200px;
+		width:1000px;
+        display: block;
+        align-items: center; /* 요소를 수직으로 중앙 정렬 */
+        background: lightgray;
+        padding:20px;
+    }
+    .user_list img{
+    	width:80px;
+    	height:80px;
+    	border-radius: 50%;
+    	position: relative;
+    	top:35px;
+    	left:20px;
+    }
+    .user_info {
+        display: flex;
+        flex-direction: column; /* 요소를 수직 방향으로 배치 */
+   		position: relative;
+   		top:40px;
+   		left:50px;
+    }
+    .user_info > span {
+        margin-bottom: 5px; /* 텍스트 사이의 간격 조정 */ 
+    }
+    
+    .order , .wish_list , .cancel , .qna{ /* 메뉴버튼 클릭시 */
+    	display:none;
+    	position: relative;
+    	top:100px;
+    	float: left;
+    }
+    /* 모달 스타일 */
+    #update_Modal{
+		display: none; /* 초기에는 보이지 않도록 설정 */
+		position: fixed; 
+		z-index: 1; 
+		padding-top: 100px; 
+		left: 0;
+		top: 0;
+		width: 100%; 
+		height: 100%;
+		overflow: auto; 
+		background-color: rgba(0,0,0,0.4);
+    }
+    .modal_content {
+		width: 400px;
+		height: auto;
+		margin: 50px auto;
+		padding: 20px 10px;
+		background: #fff;
+		border: 2px solid #666;
+		text-align: center;
+	}
+	#kakao_update_close_btn {
+		width: 10px; 
+		position: relative;
+		left: 185px;
+		bottom: 65px;
+	}
+	#kakao_update_close_btn:hover {
+		cursor: pointer;
+	}
+  
+</style>
+<!-- Jquery -->
+<script type="text/javascript">
+$(function(){
+    // 페이지 로드 시 실행되는 함수
+    $(document).ready(function(){
+        // 링크에 저장된 menu 값을 가져옴
+        var menuValue = $("#menuItem").val();
+        
+        // menu 값에 해당하는 ID를 가진 태그에 클래스를 추가
+        $("#" + menuValue).addClass("active");
+        $("." + menuValue).css("display","block");
+        
+     	 //기본이미지
+    	var imgElement = document.getElementById('previewImage2');
+    	imgElement.src = "[[${kakao.profile_image}]]" // 이미지 URL을 설정하여 이미지를 미리보기에 표시
+    	imgElement.style.display = 'block'; // 이미지 표시
+    });
+
+	// 정보 수정 버튼 클릭 시 모달 보이기
+	$("#update").click(function(){
+		$("#menuItem").val("update");
+		var menuValue = $("#menuItem").val();
+	        
+	    // menu 값에 해당하는 ID를 가진 태그에 클래스를 추가
+	    $("#" + menuValue).addClass("active");
+	    $("#order").removeClass("active");
+	    $(".order").css("display","none");
+	    $("#wish_list").removeClass("active");
+	    $(".wish_list").css("display","none");
+	    $("#cancel").removeClass("active");
+	    $(".cancel").css("display","none");
+	    $("#qna").removeClass("active");
+	    $(".qna").css("display","none");
+	    $("." + menuValue).css("display","block");
+		$("#update_Modal").css("display","block");
+	});
+	
+	$(document).on('click','#updateImgButton', function(){
+		$("#updateFile").click();
+	});
+	
+	$(document).on('change','#updateFile', function(){
+		var file = this.files[0]; // 선택한 파일 가져오기
+		
+		if (file) {
+			var reader = new FileReader(); // FileReader 객체 생성
+			
+			// 파일 읽기가 완료되었을 때의 이벤트 처리
+			reader.onload = function(e) {
+				var imgElement = document.getElementById('previewImage2');
+				imgElement.src = e.target.result; // 이미지 미리보기에 데이터 설정
+				imgElement.style.display = 'block'; // 이미지 미리보기 표시
+			};
+			
+			// 파일을 읽어서 데이터 URL로 설정
+			reader.readAsDataURL(file);
+		};
+	});
+	
+	// 파일 선택 시 미리보기 및 업로드
+	document.getElementById('fileInput').addEventListener('change',	function() {
+		var file = this.files[0]; // 선택한 파일 가져오기
+
+		if (file) {
+			var reader = new FileReader(); // FileReader 객체 생성
+
+			// 파일 읽기가 완료되었을 때의 이벤트 처리
+			reader.onload = function(e) {
+				var imgElement = document.getElementById('previewImage');
+				imgElement.src = e.target.result; // 이미지 미리보기에 데이터 설정
+				imgElement.style.display = 'block'; // 이미지 미리보기 표시
+			};
+			// 파일을 읽어서 데이터 URL로 설정
+			reader.readAsDataURL(file);
+		};
+	});
+	
+	//
+	document.getElementById("kakao_update_close_btn").onclick = function() {
+		document.getElementById("update_Modal").style.display = "none";
+	}
+});
+</script>
+</head>
+<body>
+	<div layout:fragment="content" style="background: lightgray;">
+		<input type="text" th:value="${kakao.menu}" id="menuItem">
+		
+		<div class="contai" style="width:1500px; height: 1000px;">
+			<ul class="left-menu">
+				<li><a th:href="@{kakaoMypage(menu='order',userID=${kakao.userID}
+				,nickName=${kakao.nickName},profile_image=${kakao.profile_image},
+				thumbnail_image=${kakao.thumbnail_image})}" id="order">신청/예약 조회</a>
+				
+				<li><a th:href="@{kakaoMypage(menu='wish_list',userID=${kakao.userID}
+				,nickName=${kakao.nickName},profile_image=${kakao.profile_image},
+				thumbnail_image=${kakao.thumbnail_image})}" id="wish_list">위시 리스트</a>
+				
+				<li><a th:href="@{kakaoMypage(menu='cancel',userID=${kakao.userID}
+				,nickName=${kakao.nickName},profile_image=${kakao.profile_image},
+				thumbnail_image=${kakao.thumbnail_image})}" id="cancel">취소 조회</a>
+				
+				<li><a th:href="@{kakaoMypage(menu='qna',userID=${kakao.userID}
+				,nickName=${kakao.nickName},profile_image=${kakao.profile_image},
+				thumbnail_image=${kakao.thumbnail_image})}" id="qna">1:1 문의</a>
+				<li><a href="javascript:void(0);"id="update">정보 수정</a>
+				<li><a href="" id="removeBtn">회원 탈퇴</a>
+			</ul>
+			
+			<div class="user_list">
+				<div style="background: white; height: 150px;">
+				<img alt="프로필사진" th:src="${kakao.profile_image}" style="float: left;">
+				<div class="user_info">
+					<span>[[${kakao.nickName}]]님 안녕하세요</span><p>
+					<span>누적금액 : 0원</span>
+				</div>
+				</div>
+				
+				<!-- 메뉴 종류별 클릭 시 -->
+				<div class="order">
+					<h6 style="text-align: left; font-weight: bold;">신청조회</h6>
+					<!-- 신청 및 예약이 있으면 조회후 보여주는 코드작성 -->
+					<div>주문내역이없습니다</div>
+				</div>
+				<div class="wish_list">
+					<h6 style="text-align: left; font-weight: bold;">위시리스트</h6>
+					<!-- 신청 및 예약이 있으면 조회후 보여주는 코드작성 -->
+					<div>주문내역이없습니다</div>
+				</div>
+				<div class="cancel">
+					<h6 style="text-align: left; font-weight: bold;">취소조회</h6>
+					<!-- 신청 및 예약이 있으면 조회후 보여주는 코드작성 -->
+					<div>주문내역이없습니다</div>
+				</div>
+				<div class="qna">
+					<h6 style="text-align: left; font-weight: bold;">1:1문의게시판</h6>
+					<!-- 신청 및 예약이 있으면 조회후 보여주는 코드작성 -->
+					<div>주문내역이없습니다</div>
+				</div>
+			</div>
+		</div>
+		<!-- 모달 -->
+		<div id="update_Modal">
+			<div class="modal_content">
+				<!-- 여기에 모달 내용을 추가하세요 -->
+				<h2>정보수정</h2>
+					<img id="kakao_update_close_btn" alt="" th:src="@{/images/close.png}">
+					<div id="fileupload_profile_img" class="fileupload_profile_img"	accept="image/*">
+						<input type="file" name="file" id="updateFile" style="display: none;"> 
+						<img id="previewImage2" src="" alt="Preview" style= " width: 100px; height: 100px; border-radius: 50%;">
+					</div>
+						<!-- 이미지추가하여 id부여 -->
+					<div style="position: relative; left: 30px; bottom: 30px;;">
+						<button type="button" id="updateImgButton" style="background: white; border-radius: 50%;">
+							<i class="bi bi-camera"></i>
+						</button>
+					</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
