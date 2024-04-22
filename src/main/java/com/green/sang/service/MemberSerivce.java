@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.green.sang.dto.Academy;
 import com.green.sang.dto.Buy;
+import com.green.sang.dto.Cancle;
+import com.green.sang.dto.Cart;
 import com.green.sang.dto.Member;
 
 public interface MemberSerivce {
@@ -32,6 +34,16 @@ public interface MemberSerivce {
 	Buy selectBuy(int b_no);
 
 	Academy selectImg(Integer b_no);
+
+	int select_Max_CaNo();
+
+	int insertCancle(Cancle cancle);
+
+	void updateCancle(int b_no);
+
+	int updateCancle_Stop(int b_no);
+
+	List<Cart> selectWishList(String id);
 
 
 

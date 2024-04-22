@@ -29,18 +29,43 @@
 	</select>
 	
 	<!-- 구매번호로 구매내역조회 -->
-	<select id="selectBuy">
+	<select id="selectBuy" parameterType="integer" resultType="Buy">
 		select * from Buy where b_no = #{b_no}
 	</select>
 	
 	<!-- 구매번호로 구매한 이미지조회 -->
-	<select id="selectImg">
-		select * from Buy where b_no = #{b_no}
+	<select id="selectImg" parameterType="integer" resultType="Academy">
+		select * from academy where a_no = #{a_no}
+	</select>
+	
+	<!-- 취소번호 Max 값 추출 -->
+	<select id="select_Max_CaNo">
+		select nvl(max(ca_no),0)+1 from cancle
+	</select>
+	
+	<!-- 위시리스트 조회 -->
+	<select id="selectWishList" parameterType="string" resultType="cart">
+		select * from Love where id = #{id}
 	</select>
 	
 	<insert id="insert" parameterType="member">
 		insert into member values(#{id},#{password},#{name},#{tel},#{email},#{image},sysdate,'n','n','n')
 	</insert>
+	
+	<!-- 취소내역 입력 -->
+	<insert id="insertCancle" parameterType="cancle" >
+		insert into cancle values(#{ca_no} , #{ca_option} , #{ca_content} , #{b_no})
+	</insert>
+	
+	<!-- 구매취소 n => y 변경 -->
+	<update id="updateCancle" parameterType="integer">
+		update buy set cancle = 'y' where b_no = #{b_no}
+	</update>
+	
+	<!-- 취소철회 y => n 변경 -->
+	<update id="updateCancle_Stop" parameterType="integer">
+		update buy set cancle = 'n' where b_no = #{b_no}
+	</update>
 	
 	<update id="updatePass" parameterType="member">
 		update member set password = #{password} where id = #{id}

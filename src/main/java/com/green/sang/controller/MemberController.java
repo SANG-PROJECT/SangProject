@@ -22,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.green.sang.dto.Academy;
 import com.green.sang.dto.Buy;
+import com.green.sang.dto.Cancle;
+import com.green.sang.dto.Cart;
 import com.green.sang.dto.Kakao;
 import com.green.sang.dto.Member;
 import com.green.sang.service.MemberSerivce;
@@ -124,8 +126,9 @@ public class MemberController {
 	public String Mypage(Model model, HttpSession session, @RequestParam(value = "menu", defaultValue = "") String menu,
 			@RequestParam(value = "b_no", required = false) Integer b_no) {
 		String id = (String) session.getAttribute("id");
-		if (menu == null || menu.equals(""))
-			menu = "order";
+		System.out.println("아이디 : " + id);
+		
+		if (menu == null || menu.equals("")) menu = "order";
 
 		Member member = ms.select(id);
 
@@ -149,15 +152,38 @@ public class MemberController {
 		}
 
 		// 구매취소 시 해당 구매내역의 b_no를 전달받아 처리
-		// 상품이미지를 어떻게가져올지 물어보기
 		if (b_no != null) {
+			System.out.println("구매번호 : " + b_no);
 			Buy buy = ms.selectBuy(b_no);
-			/*
-			 * Academy academy3 = ms.selectImg(); System.out.println("이미지 : " +
-			 * academy3.getImage());
-			 */
+			System.out.println("buy에있는 구매번호 : " + buy.getB_no());
+			System.out.println("가져온 a번호 : " + buy.getA_no());
 
-			model.addAttribute("buy", buy);
+			Academy academy3 = ms.selectImg(buy.getA_no());
+			System.out.println("가져온 ac이미지 : " + academy3.getImage());
+			System.out.println("개수 : " + buy.getC_count());
+			System.out.println("가격 : " + academy3.getPrice());
+
+			int buyTotal = buy.getC_count() * academy3.getPrice();
+			System.out.println("구매금액 토탈 : " + buyTotal);
+
+			model.addAttribute("buyItem", buy);
+			model.addAttribute("academyItem", academy3);
+			model.addAttribute("buyTotal", buyTotal);
+
+		}
+		
+		//id로 위시리스트 조회 후 있으면 보여주기wish_list
+		List<Cart> wishlist = ms.selectWishList(id);
+		if(wishlist != null) {
+			List<Academy> academyArr = new ArrayList<>();
+			
+			for(Cart wish : wishlist) {
+				int wish_Ano = wish.getA_no();
+				Academy academy = ms.selectBuyInfo(wish_Ano);
+				academyArr.add(academy);
+			}
+			
+			model.addAttribute("academyArr",academyArr);
 		}
 
 		model.addAttribute("academyList", academyList);
@@ -167,6 +193,46 @@ public class MemberController {
 		model.addAttribute("menu", menu);
 
 		return "member/mypage";
+	}
+
+	@GetMapping("cancleSelect")
+	public String cancleSelect(Model model , Cancle cancle , Buy buy) {
+		int result = 0;
+		
+		if(cancle.getCa_content() != null && cancle.getCa_option() != null) {
+		  
+			int maxCancle_No = ms.select_Max_CaNo();
+			System.out.println("Max 취소번호 : " + maxCancle_No);
+			int b_no = buy.getB_no();
+			System.out.println("B_no : " + b_no);
+			
+			cancle.setCa_no(maxCancle_No);
+			cancle.setB_no(b_no);
+
+			result = ms.insertCancle(cancle);
+			try {
+				ms.updateCancle(b_no);
+			} catch (Exception e) {
+				System.out.println("구매취소 업데이트 쿼리중 에러" + e.getMessage());
+			}
+		
+		}else result = -1;
+		 
+		
+		model.addAttribute("result" , result);
+		return "member/cancle";
+	}
+	
+	@GetMapping("cancle_Stop")
+	public String cancle_Stop(Model model , Buy buy) {
+		System.out.println("들어온 B넘버 : " + buy.getB_no());
+		int result = 0;
+		
+		result = ms.updateCancle_Stop(buy.getB_no());
+		
+		model.addAttribute("result",result);
+		
+		return "member/updateCancle_Stop";
 	}
 
 	@PostMapping("update")
@@ -218,5 +284,12 @@ public class MemberController {
 		model.addAttribute("result", result);
 		return "member/delete";
 	}
+	
+	@GetMapping("QnAWhiteForm")
+	public String QnAWhite() {
+		
+		return "member/QnAWhiteForm";
+	}
+	
 
 }

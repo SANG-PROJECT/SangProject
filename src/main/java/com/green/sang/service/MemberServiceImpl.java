@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.green.sang.dto.Academy;
 import com.green.sang.dto.Buy;
+import com.green.sang.dto.Cancle;
+import com.green.sang.dto.Cart;
 import com.green.sang.dto.Member;
 import com.green.sang.mapper.MemberMapper;
 
@@ -90,6 +92,36 @@ public class MemberServiceImpl implements MemberSerivce{
 	public Academy selectImg(Integer b_no) {
 		
 		return mm.selectImg(b_no);
+	}
+
+	@Override
+	public int select_Max_CaNo() {
+		
+		return mm.select_Max_CaNo();
+	}
+
+	@Override
+	public int insertCancle(Cancle cancle) {
+		
+		return mm.insertCancle(cancle);
+	}
+
+	@Override
+	public void updateCancle(int b_no) {
+		mm.updateCancle(b_no);
+		
+	}
+
+	@Override
+	public int updateCancle_Stop(int b_no) {
+		
+		return mm.updateCancle_Stop(b_no);
+	}
+
+	@Override
+	public List<Cart> selectWishList(String id) {
+		
+		return mm.selectWishList(id);
 	}
 
 

@@ -138,7 +138,9 @@ create table cart (
 	foreign key(id) references member(id),
 	foreign key(a_no) references academy(a_no)
 );
+insert into cart values(1,1,'user',1);
 select * from cart;
+select * from cart where id = 'user';
 
 -- 구매
 create table buy (
@@ -155,7 +157,7 @@ insert into buy values(1,sysdate,'n',1,1,'user');
 insert into buy values(2,sysdate,'n',2,1,'user');
 select * from buy;
 update buy set c_count = 2 where b_no = 1;
-update buy set cancle = 'y' where b_no = 2;
+update buy set cancle = 'n' where b_no = 2;
 
 -- 찜
 create table love (
@@ -166,6 +168,7 @@ create table love (
 	foreign key(a_no) references academy(a_no)
 );
 insert into love values(1,'user',1)
+insert into love values(2,'user',2)
 select * from love;
 
 -- 리뷰
@@ -253,3 +256,16 @@ create table detail(
 	text6_img varchar2(200),
 	foreign key(a_no) references academy(a_no)
 );
+
+--구매취소내역
+create table cancle(
+	ca_no number(20) primary key,
+	ca_option varchar2(100),
+	ca_content varchar2(1000),
+	b_no number(20),
+	foreign key(b_no) references buy(b_no)
+);
+select * from cancle;
+
+select nvl(max(ca_no),0) +1 from cancle;
+select nvl(max(ca_no),0)+1 from cancle;
