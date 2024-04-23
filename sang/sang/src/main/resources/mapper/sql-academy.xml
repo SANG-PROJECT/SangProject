@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.sang.mapper.AcademyMapper">
+	<select id="list_Free" resultType="Academy">
+		select a.* from academy a, category c where a.ct_no=c.ct_no and c.free is not null
+		 order by a_date desc
+	</select>
+	<select id="list_Hobby" resultType="Academy">
+		select a.* from academy a, category c where a.ct_no=c.ct_no and c.hobby is not null
+		 order by a_date desc
+	</select>
+	<select id="list_Write" resultType="Academy">
+		select a.* from academy a, category c where a.ct_no=c.ct_no and c.write is not null
+		 order by a_date desc
+	</select>
+	<select id="list_Book" resultType="Academy">
+		select a.* from academy a, category c where a.ct_no=c.ct_no and c.book is not null
+		 order by a_date desc
+	</select>
+	<select id="list_Design" resultType="Academy">
+		select a.* from academy a, category c where a.ct_no=c.ct_no and c.design is not null
+		 order by a_date desc
+	</select>
+	<select id="list_Media" resultType="Academy">
+		select a.* from academy a, category c where a.ct_no=c.ct_no and c.media is not null
+		 order by a_date desc
+	</select>
+	<select id="list_Photo" resultType="Academy">
+		select a.* from academy a, category c where a.ct_no=c.ct_no and c.photo is not null
+		 order by a_date desc
+	</select>
+	<select id="select" parameterType="Integer" resultType="Academy">
+		select a.*, d.* from academy a, detail d where a.a_no = #{a_no}
+	</select>
+	<select id="findIdByANo" parameterType="Integer" resultType="String">
+		select id from academy where a_no = #{a_no}
+	</select>
+	<select id="ac_list" parameterType="String" resultType="Academy">
+		select * from academy where id=#{id}
+	</select>
+</mapper>
