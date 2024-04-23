@@ -1,5 +1,8 @@
 package com.green.sang.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +25,9 @@ import org.springframework.web.client.RestTemplate;
 
 import com.green.sang.dto.Academy;
 import com.green.sang.dto.Kakao;
+import com.green.sang.dto.Member;
 import com.green.sang.service.AcademyService;
+import com.green.sang.service.MemberSerivce;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -32,8 +37,11 @@ public class KakaoController {
 	@Autowired
 	private AcademyService as;
 	
+	@Autowired
+	private MemberSerivce ms;
+	
 	@GetMapping("/kakaoCallBack")
-	public String callback(@RequestParam("code") String code , Model model , HttpSession session) {
+	public String callback(@RequestParam("code") String code , Model model , HttpSession session) throws IOException {
 		int result = 0;
 	    System.out.println("code : " + code);
 	    
@@ -94,7 +102,19 @@ public class KakaoController {
 	            kakao.setUserID(userID);
 	            kakao.setNickName(nickName);
 	            kakao.setProfile_image(profile_image);
-	            kakao.setThumbnail_image(thumbnail_image);
+	            kakao.setThumbnail_image(thumbnail_image);         
+	            
+	            //kakao아이디가 member테이블에 있는지
+	            String id = String.valueOf(kakao.getUserID());
+	            System.out.println("변환 아이디 : " + id);
+	            Member kakaoMember = ms.selectKakao(id); 
+	                
+	            //없으면 insert
+	            if(kakaoMember == null) {
+	            	System.out.println("카카오2 없다");
+	            	ms.insertKakao(kakao);
+	            	//카카오이미지 upload폴더에 저장
+	            }
 	         
 	            System.out.println("userID : " +userID);
 	            System.out.println("nickName : " +nickName);
@@ -117,6 +137,7 @@ public class KakaoController {
 	    model.addAttribute("result",result);
 	    return "member/kakaoLogin"; 
 	}
+	
 	@GetMapping("kakaoLogout")
 	public String kakaoLogout(HttpSession session) {
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -161,14 +182,14 @@ public class KakaoController {
 	
 	@GetMapping("kakaoMypage")
 	public String mypage(Model model , HttpSession session , Kakao kakao ) {
-		Long id = (Long)session.getAttribute("id");
-		System.out.println("카카오 세션id : " + id);
-		System.out.println(kakao.getNickName());
-		System.out.println("메뉴 : " + kakao.getMenu());
+		Long id = (Long)session.getAttribute("id");	
+		String kakaoSessionID = String.valueOf(id);
+		Member kakaoMember = ms.select(kakaoSessionID);
+		System.out.println("카카오 디비 아이디 : " +kakaoMember.getId());
 		
 		if(kakao.getMenu() == null ) kakao.setMenu("order"); // 디폴트 : 신청/예약조회
 		
-		model.addAttribute("kakao",kakao);
+		model.addAttribute("kakaoMember",kakaoMember);
 		model.addAttribute("id",id);
 		return "member/kakaoMypage";
 	}

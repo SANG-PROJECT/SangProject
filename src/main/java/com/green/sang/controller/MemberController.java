@@ -26,6 +26,7 @@ import com.green.sang.dto.Cancle;
 import com.green.sang.dto.Cart;
 import com.green.sang.dto.Kakao;
 import com.green.sang.dto.Member;
+import com.green.sang.dto.QnA;
 import com.green.sang.service.MemberSerivce;
 
 import jakarta.mail.Multipart;
@@ -125,12 +126,25 @@ public class MemberController {
 	@GetMapping("mypage")
 	public String Mypage(Model model, HttpSession session, @RequestParam(value = "menu", defaultValue = "") String menu,
 			@RequestParam(value = "b_no", required = false) Integer b_no) {
-		String id = (String) session.getAttribute("id");
-		System.out.println("아이디 : " + id);
+		Object idObject = session.getAttribute("id");
+		String id = "";
+		String kakaoImgChk = "";
+		
+		if(idObject instanceof Long) {
+			id = String.valueOf(idObject);
+			System.out.println("변환된 id = " + id);
+			kakaoImgChk = "true";
+			
+		}else {
+			id = (String) session.getAttribute("id");
+			System.out.println("일반아이디 : " + id);	
+			kakaoImgChk = "false";
+		}
 		
 		if (menu == null || menu.equals("")) menu = "order";
 
 		Member member = ms.select(id);
+		System.out.println("조회된 사진 : " + member.getImage());
 
 		List<Buy> buyList = ms.selectBuyList(id);
 
@@ -176,6 +190,8 @@ public class MemberController {
 		List<Cart> wishlist = ms.selectWishList(id);
 		if(wishlist != null) {
 			List<Academy> academyArr = new ArrayList<>();
+			int count_Wish_No = ms.select_Max_Wish_No(id);
+			System.out.println("위시리스트 Max : " + count_Wish_No);
 			
 			for(Cart wish : wishlist) {
 				int wish_Ano = wish.getA_no();
@@ -183,7 +199,17 @@ public class MemberController {
 				academyArr.add(academy);
 			}
 			
+			model.addAttribute("count_Wish_No",count_Wish_No);
 			model.addAttribute("academyArr",academyArr);
+		}
+		
+		//id로 문의내역 있으면 보여주기 QnA
+		List<QnA> qnalist = ms.selectQnAList(id);
+		if(qnalist != null) {
+			 
+			int count_QnA_No = ms.select_Max_QnA_No(id);
+			model.addAttribute("count_QnA_No" , count_QnA_No); //sql에서 max넘버 +1하기때문에 -1해서 맞춘다.
+			model.addAttribute("qnalist",qnalist);
 		}
 
 		model.addAttribute("academyList", academyList);
@@ -191,7 +217,7 @@ public class MemberController {
 		model.addAttribute("member", member);
 		model.addAttribute("id", id);
 		model.addAttribute("menu", menu);
-
+		model.addAttribute("kakaoImgChk",kakaoImgChk);
 		return "member/mypage";
 	}
 
@@ -286,10 +312,80 @@ public class MemberController {
 	}
 	
 	@GetMapping("QnAWhiteForm")
-	public String QnAWhite() {
+	public String QnAWhiteForm(Model model , QnA qna) {
+		System.out.println("넌뭔데 : " + qna);
+		
+		if(qna.getQ_no() != 0 ) { //문의작성시 qna안에 q_no 초기값이 0이라서 
+			QnA qnaItem = ms.selectQnA(qna.getQ_no());
+			System.out.println("qna2 제목 " + qnaItem.getQ_title());
+			
+			model.addAttribute("qnaItem",qnaItem);
+		}
 		
 		return "member/QnAWhiteForm";
 	}
+	
+	@GetMapping("QnAWhite")
+	public String QnAWhite(Model model, QnA qna ,HttpSession session) {
+		int result = 0;
+		Object idObject = session.getAttribute("id");
+		String id = "";
+		
+		if(idObject instanceof Long) {
+			id = String.valueOf(idObject);
+			System.out.println("변환된 id = " + id);
+
+			
+		}else {
+			id = (String) session.getAttribute("id");
+			System.out.println("일반아이디 : " + id);	
+		}
+		
+		System.out.println("제목 : " + qna.getQ_title());
+		System.out.println("내용 : " + qna.getQ_content());
+		System.out.println("아이디 : " + id);
+		
+		int max_QnA_No = ms.select_Max_QnA_No(id);
+		System.out.println("맥스 Qna넘버 : " + max_QnA_No);
+		
+		qna.setQ_no(max_QnA_No);
+		qna.setId(id);
+		
+		result = ms.insertQnA(qna);
+		
+		model.addAttribute("result",result);
+		
+		return "member/QnAWhite";
+	}
+	
+	@GetMapping("QnAUpdate")
+	public String QnAUpdate(Model model , QnA qna) {
+		int result = 0;
+		System.out.println("qna : " + qna.getQ_no());
+		if(qna.getQ_no() != 0) {
+			System.out.println("문의번호 : " + qna.getQ_no());
+			
+			result = ms.QnAUpdate(qna);
+			
+			
+		}
+		model.addAttribute("result" , result);
+		return "member/QnAUpdate";
+	}
+	
+	
+	@GetMapping("qnaDelete")
+	public String qnaDelete(Model model, QnA qna) {
+		int result = 0;
+		System.out.println("문의번호 : " + qna.getQ_no());
+		
+		result = ms.deleteQnA(qna.getQ_no());
+		
+		model.addAttribute("result",result);
+		
+		return "member/QnADelete";
+	}
+	
 	
 
 }

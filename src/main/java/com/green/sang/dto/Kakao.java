@@ -5,7 +5,7 @@ import org.apache.ibatis.type.Alias;
 import lombok.Data;
 
 @Data
-@Alias("kakao")
+@Alias("Kakao")
 public class Kakao {
 	private Long userID;
 	private String nickName;

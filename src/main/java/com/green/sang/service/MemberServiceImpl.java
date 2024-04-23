@@ -11,7 +11,9 @@ import com.green.sang.dto.Academy;
 import com.green.sang.dto.Buy;
 import com.green.sang.dto.Cancle;
 import com.green.sang.dto.Cart;
+import com.green.sang.dto.Kakao;
 import com.green.sang.dto.Member;
+import com.green.sang.dto.QnA;
 import com.green.sang.mapper.MemberMapper;
 
 @Service
@@ -122,6 +124,60 @@ public class MemberServiceImpl implements MemberSerivce{
 	public List<Cart> selectWishList(String id) {
 		
 		return mm.selectWishList(id);
+	}
+
+	@Override
+	public int insertQnA(QnA qna) {
+		
+		return mm.insertQnA(qna);
+	}
+
+	@Override
+	public int select_Max_QnA_No(String id) {
+		
+		return mm.select_Max_QnA_No(id);
+	}
+
+	@Override
+	public List<QnA> selectQnAList(String id) {
+		
+		return mm.selectQnAList(id);
+	}
+
+	@Override
+	public int deleteQnA(int q_no) {
+		
+		return mm.deleteQnA(q_no);
+	}
+
+	@Override
+	public QnA selectQnA(int q_no) {
+		
+		return mm.selectQnA(q_no);
+	}
+
+	@Override
+	public int QnAUpdate(QnA qna) {
+		
+		return mm.QnAUpdate(qna);
+	}
+
+	@Override
+	public int select_Max_Wish_No(String id) {
+		
+		return mm.select_Max_Wish_No(id);
+	}
+
+	@Override
+	public Member selectKakao(String id) {
+		
+		return mm.selectKakao(id);
+	}
+
+	@Override
+	public void insertKakao(Kakao kakao) {
+		mm.insertKakao(kakao);
+		
 	}
 
 

@@ -38,6 +38,8 @@ body{
 	.left-menu>li>a{
 		text-decoration: none;
 		color:black;
+		font-size: 13px;
+		font-weight: bold;
 	}
 	.contai{
         justify-content: space-between; /* 요소를 양쪽 끝으로 배치 */
@@ -99,6 +101,32 @@ body{
     	top:100px;
     	float: left; 
     }
+    .order > h6 {
+    	text-align: left; 
+    	font-weight: bold; 
+    	font-size: 17px; 
+    	margin-bottom: 20px;
+    }
+    .order_Box{
+    	margin-bottom:30px; 
+    	background: white; 
+    	width: 800px; 
+    	height: 100px;
+    }
+    .wish_list > h6{
+    	text-align: left; 
+    	font-weight: bold; 
+    	font-size: 17px;
+    	margin-bottom: 20px;
+    }
+    .wish_title{
+    	color:navy;
+    	
+    }
+    .wish_price{
+		color:black;
+		font-weight: bold;
+    }
     /* 업데이트 모달 스타일 */
     #update_Modal{
 		display: none; /* 초기에는 보이지 않도록 설정 */
@@ -145,7 +173,7 @@ body{
 		width: 10px; 
 		position: relative;
 		left: 370px;
-		bottom: 65px;
+		bottom: 45px;
 	}
 	#update_close_btn:hover {
 		cursor: pointer;
@@ -163,7 +191,7 @@ body{
 		width: 10px; 
 		position: relative;
 		left: 565px;
-		bottom: 65px;
+		bottom: 45px;
 	}
 	#delete_close_btn:hover {
 		cursor: pointer;
@@ -180,6 +208,26 @@ body{
 		height: 100%;
 		overflow: auto; 
 		background-color: rgba(0,0,0,0.4);
+	}
+	/* 회원탈퇴 버튼 */
+	.deleteMember{
+		text-align: center;
+		
+	}
+	.deleteMember a {
+		text-decoration: none;
+	}
+	.deleteMember a:nth-child(1) {
+		background: white; 
+		color: black; 
+		border: 1px solid gray; 
+		padding: 10px;
+	}
+	.deleteMember a:nth-child(2) {
+		background: blue; 
+		color:white; 
+		border: 1px solid blue; 
+		padding: 10px; 
 	}
 	.cancle_Box > h6 {
 		border:1px solid gray; 
@@ -224,10 +272,10 @@ $(function(){
         $("#" + menuValue).addClass("active");
         $("." + menuValue).css("display","block");
         
-     	 //기본이미지
+     /* 	 //기본이미지
     	var imgElement = document.getElementById('previewImage2');
     	imgElement.src = "upload/[[${member.image}]]" // 이미지 URL을 설정하여 이미지를 미리보기에 표시
-    	imgElement.style.display = 'block'; // 이미지 표시
+    	imgElement.style.display = 'block'; // 이미지 표시 */
     });
 
 	// 정보 수정 버튼 클릭 시 모달 보이기
@@ -301,10 +349,29 @@ $(function(){
 		
 	});
 	
+	//QnA 내역 수정버튼 클릭 시
+	$(document).on('click' , '.qnaUpdate' , function(){
+		let q_no = this.getAttribute("data-qno");
+		
+		let check = confirm("수정 하시겠습니까?");
+		if(check) location.href="QnAWhiteForm?q_no="+ q_no;
+	});
+	
+	//QnA 내역 지우기 버튼 클릭 시
+	$(document).on('click' , '.qnaDelete' , function(){
+		let q_no = this.getAttribute("data-qno");
+		
+		let check = confirm("삭제 하시겠습니까?");
+		if(check) location.href="qnaDelete?q_no="+ q_no;
+	});
+	
 	//회원탈퇴 모달 x버튼 클릭시 Modal감추기
 	document.getElementById("delete_close_btn").onclick = function() {
 		document.getElementById("delete_Modal").style.display = "none";
 	}
+	
+	//회원탈퇴 버튼 클릭 시 
+	
 	
 	function passChk(){
 		if(updatefrm.password.val() != updatefrm.password2.val()){
@@ -313,26 +380,17 @@ $(function(){
 		}
 	}
 	
-	function QnA_white() {
-	    let white = confirm("1:1 문의를 작성하시겠습니까?");
-	    if (white) {
-	        location.href = "/main";
-	        return true;
-	    } else {
-	        return false;
-	    }
-	}
 	
 });
 
 
 </script>
 </head>
-<body>
-	<div layout:fragment="content" style="background: lightgray;">
+<body style="height: 100%;">
+	<div layout:fragment="content" style="background: lightgray; height: 1200px;">
 		<input type="text" th:value="${menu}" id="menuItem">
 	
-		<div class="contai" style="width:1200px; height: 1200px;">
+		<div class="contai" style="width:1200px; height: 100%;">
 			<ul class="left-menu">
 				<li><a th:href="@{mypage(menu='order')}" id="order">신청/예약 조회</a>
 				
@@ -346,44 +404,46 @@ $(function(){
 			</ul>
 			
 			<div class="user_list">
-				<div style="background: white; height: 150px;">
-				<img class="profileImg" alt="프로필사진" th:src="@{'/upload/'+${member.image}}" style="float: left;">
-				<div class="user_info">
+				<div style="background: white; height: 150px; width: 800px;">
+				<img th:if="${kakaoImgChk} == 'true'" class="profileImg" alt="프로필사진" th:src="@{${member.image}}" style="float: left;">
+				<img th:if="${kakaoImgChk} == 'false'" class="profileImg" alt="프로필사진" th:src="@{'/upload/'+${member.image}}" style="float: left;">
+				<div class="user_info">												
 					<span>[[${member.name}]] 님 안녕하세요</span><p>
 					<span>누적금액 : 0원</span>
 				</div>
 				</div>
 				<div class="order">
-					<h6 style="text-align: left; font-weight: bold;">신청조회</h6>
+					<h6>신청조회</h6>
 					<!-- 신청 및 예약이 있으면 조회후 보여주는 코드작성 -->
 					<div th:if="${academyList} == null">주문내역이 없습니다</div>
-					<div th:if="${academyList} != null" style="display: flex; flex-wrap: wrap;"><!-- 너비이상넘어가면 아래로내려옴 -->
+					<!-- 주문내역 있으면 , 								너비이상넘어가면 아래로내려옴 -->
+					<div th:if="${academyList} != null" style="display: flex; flex-wrap: wrap;">
 						<div th:id="'academy_'+${academy.a_no}" th:each = "academy : ${academyList}">
 							<div style="display: flex; align-items: center;">
-								<h6>주문번호 : <b style="color: blue;">[[${academy.b_no}]]</b></h6>
-								<h6 style="position: relative; left: 700px;">주문일자 : [[${academy.b_date}]]</h6>
+								<h4>주문번호 : <b style="color: blue;">[[${academy.b_no}]]</b></h4>
+								<h4 style="position: relative; left: 560px;">주문일자 : [[${academy.b_date}]]</h4>
 							</div>
-							<div style="margin-bottom:30px; background: white; width: 960px; height: 100px;">
+							<div class="order_Box">
 								<div style="display: flex; align-items: center;">
 									<img class="orderImg" alt="디테일이미지" th:src="@{'/images/academy/'+${academy.image}}"><p>
 									<div style="margin-left: 20px;">
-										<h6>[[${academy.title}]]</h6>
-										<h6>[[${academy.intro}]]</h6>
-										<h6>[[${academy.price}]]원/[[${academy.c_count}]]개</h6>
+										<h5>[[${academy.title}]]</h5>
+										<h5>[[${academy.intro}]]</h5>
+										<h5>[[${academy.price}]]원/[[${academy.c_count}]]개</h5>
 									</div>
 									<div th:if="${academy.cancle} == 'n'" style="display: flex; align-items: center;">
 										<div>
-											<h6 style="margin-left: 50px; color: blue;">신청 완료</h6><!-- cancle값사용 -->
+											<h6 style="margin-left: 70px; color: blue;">신청 완료</h6><!-- cancle값사용 -->
 										</div>
-										<div class="cancle_Box"style="margin-left: 180px; margin-top: 10px;">
+										<div class="cancle_Box"style="position: relative; left: 160px;">
 											<a th:href="@{mypage(menu='cancleForm',b_no=${academy.b_no})}">취소하기</a>
 										</div>
 									</div>
 									<div th:if="${academy.cancle} == 'y'" style="display: flex; align-items: center;">
 										<div>
-											<h6 style="margin-left: 50px; color: red;">취소 요청</h6><!-- cancle값사용 -->
+											<h6 style="margin-left: 70px; color: red;">취소 요청</h6><!-- cancle값사용 -->
 										</div>
-										<div class="cancle_Box"style="margin-left: 180px; margin-top: 10px;">
+										<div class="cancle_Box"style="position: relative; left: 160px;">
 											<div class="academyInfo" th:attr="data-academy ='${academy.cancle}'"></div><!-- 취소상세모달에서사용 -->
 											<a th:href="@{cancle_Stop(b_no=${academy.b_no})}" onclick="return stopChk()">취소철회</a>
 										</div>
@@ -395,14 +455,15 @@ $(function(){
 				</div>
 				
 				<div class="wish_list">
-					<h6 style="text-align: left; font-weight: bold;">위시리스트</h6>
+					<h6 style="text-align: left; font-weight: bold;">위시리스트
+					 <i style="background: blue; border-radius: 50%; color: white; padding:8px; line-height:8px; width:30px; display: inline-block; ">[[${count_Wish_No}]]</i></h6>
 					<!-- 신청 및 예약이 있으면 조회후 보여주는 코드작성 -->
 					<div th:if="${academyArr} == null">주문내역이 없습니다</div>
 					<div th:if="${academyArr} != null" style="display: flex; align-items: center; flex-wrap:wrap;">
 						<div th:each="academy : ${academyArr}" style="width: 250px; margin-right: 20px;">
 							<img alt="위시사진" th:src="@{'/images/academy/'+${academy.image}}" style="width: 250px;"><br>
-							<span>[[${academy.title}]]</span><br>
-							<h5>[[${academy.price}]]원</h5>
+							<span class="wish_title">[[${academy.title}]]</span><br>
+							<span class="wish_price">[[${academy.price}]]원</span><p>
 							[New] [모집중] 추가예정<br>
 							[이미지 클릭시 페이지이동] 추가예정
 						</div>
@@ -415,12 +476,30 @@ $(function(){
 					<div>주문내역이없습니다</div>
 				</div>
 				
+				<!-- 1:1문의 -->
 				<div class="qna" style="width: 100%;">
-					<h6 style="text-align: left; font-weight: bold;">1:1문의게시판</h6>
+					<h4 style="text-align: left; font-weight: bold;">1:1문의게시판
+					  <i style="background: blue; border-radius: 50%; color: white; padding:8px; line-height:3px; width:30px; display: inline-block; ">[[${count_QnA_No}]]</i></h4>
+						<hr>
 					<!-- 신청 및 예약이 있으면 조회후 보여주는 코드작성 -->
-					<div>등록된 문의가 없습니다</div>
+					<div th:if="${qnalist} == null">등록된 문의가 없습니다</div>
+					<div th:if="${qnalist} != null">
+						<div th:each="qnaItem : ${qnalist}">
+							<img th:if="${kakaoImgChk} == 'true'" th:src="@{${member.image}}" alt="Preview" style= " width: 50px; border-radius: 50%;">
+							<img th:if="${kakaoImgChk} == 'false'" id="previewImage2" th:src="@{'/upload/'+${member.image}}" alt="Preview" style= " width: 50px; border-radius: 50%;">
+							<div style="position: relative; left: 60px; top:-50px;">
+								<span>[[${member.name}]]</span>
+								<span th:text="${#dates.format(qnaItem.q_date,'yyyy-MM-dd HH:mm:ss')}"></span><p>
+								<h4 th:utext="${qnaItem.q_content}"></h4>
+								 <a href="#" class="qnaUpdate" th:attr="data-qno=${qnaItem.q_no}">수정</a>
+								 | 
+								 <a href="#" class="qnaDelete" th:attr="data-qno=${qnaItem.q_no}">지우기</a>
+							</div>
+						</div>
+					</div>
 
-					<a th:href="@{QnAWhiteForm}">문의 작성</a>
+					<a th:href="@{QnAWhiteForm}" style="background: white; color:blue; padding:10px; border: 1px solid blue; text-decoration: none;
+					font-weight: bold; float: right;">문의 작성</a>
 				</div>
 				
 				<!-- 신청 취소버튼 클릭시 보여지는 화면 -->
@@ -506,15 +585,17 @@ $(function(){
 			<!-- 정보수정 모달 -->
 			<div id="update_Modal">
 			<div class="modal_content">
-				<h2 style="text-align: center;">정보수정</h2>
+				<h2 th:if="${kakaoImgChk} == 'true'" style="text-align: center;">정보수정[카카오]</h2>
+				<h2 th:if="${kakaoImgChk} == 'false'" style="text-align: center;">정보수정</h2>
 				<img id="update_close_btn" alt="" th:src="@{/images/close.png}">
 				<form action="update" name="updatefrm" method="post" enctype="multipart/form-data" onsubmit="return passChk()">
 					<input type="hidden" name="id" th:value="${member.id}">
 					<div id="fileupload_profile_img" class="fileupload_profile_img"	accept="image/*">
 						<input type="file" name="file" id="updateFile" style="display: none;"> 
-						<img id="previewImage2" src="" alt="Preview" style= " width: 100px; height: 100px; border-radius: 50%;">
+						<img th:if="${kakaoImgChk} == 'true'" th:src="@{${member.image}}" alt="Preview" style= " width: 100px; height: 100px; border-radius: 50%;">
+						<img th:if="${kakaoImgChk} == 'false'" th:src="@{'/upload/'+${member.image}}" alt="Preview" style="width: 100px; height: 100px; border-radius: 50%;">
 					</div>
-						<!-- 이미지추가하여 id부여 -->
+
 					<div style="position: relative; width:100%; left: 210px; bottom: 30px;">
 						<button type="button" id="updateImgButton" style="background: white; border-radius: 50%;">
 							<i class="bi bi-camera"></i>
@@ -548,11 +629,9 @@ $(function(){
 						</span>
 					</div>
 					<p>
-					<div style="text-align: center;">
-						<a href="" 
-						style="background: white; color: black; border: 1px solid gray; padding: 10px;" id="cancle">취소</a>
-						<a th:href="@{delete(id=${member.id})}" 
-						style="background: blue; color:white; border: 1px solid blue; padding: 10px;"  id="">탈퇴하기</a>
+					<div class="deleteMember">
+						<a href="mypage">취소</a>
+						<a th:href="@{delete(id=${member.id})}">탈퇴하기</a>
 					</div>
 				</div>
 			</div>

@@ -155,6 +155,7 @@ create table buy (
 );
 insert into buy values(1,sysdate,'n',1,1,'user');
 insert into buy values(2,sysdate,'n',2,1,'user');
+insert into buy values(3,sysdate,'n',2,1,'3436353406');
 select * from buy;
 update buy set c_count = 2 where b_no = 1;
 update buy set cancle = 'n' where b_no = 2;
@@ -167,8 +168,10 @@ create table love (
 	foreign key(id) references member(id),
 	foreign key(a_no) references academy(a_no)
 );
-insert into love values(1,'user',1)
+insert into love values(3,'3436353406',1)
 insert into love values(2,'user',2)
+select count(*) from Love where id = '3436353406';
+select count(*) from qna where id = '3436353406';
 select * from love;
 
 -- 리뷰
@@ -257,7 +260,7 @@ create table detail(
 	foreign key(a_no) references academy(a_no)
 );
 
---구매취소내역
+--+구매취소내역
 create table cancle(
 	ca_no number(20) primary key,
 	ca_option varchar2(100),
@@ -267,5 +270,14 @@ create table cancle(
 );
 select * from cancle;
 
-select nvl(max(ca_no),0) +1 from cancle;
-select nvl(max(ca_no),0)+1 from cancle;
+--+ 1:1문의
+drop table QnA;
+create table QnA(
+	q_no number(20) primary key,
+	q_title varchar2(100),
+	q_content varchar2(2000),
+	q_date Date,
+	id varchar2(20),
+	foreign key(id) references member(id)
+);
+select * from QnA;

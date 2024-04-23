@@ -48,13 +48,49 @@
 		select * from Love where id = #{id}
 	</select>
 	
+	<!-- 위시리스트 Max 넘버 -->
+	<select id="select_Max_Wish_No" parameterType="string" resultType="integer">
+		select count(*) from Love where id = #{id}
+	</select>
+	
+	<!-- QnA게시판 Max 넘버 -->
+	<select id="select_Max_QnA_No" parameterType="string" resultType="integer">
+		select count(*) from qna where id = #{id}
+	</select>
+	
+	<!-- QnA게시판 문의내역 List -->
+	<select id="selectQnAList" parameterType="string" resultType="QnA">
+		select * from qna where id = #{id}
+	</select>
+	
+	<!-- QnA q_no로 정보가져오기 -->
+	<select id="selectQnA" parameterType="integer" resultType="QnA">
+		select * from qna where q_no = #{q_no}
+	</select>
+	
+	<!-- 카카오ID가 존재하는지 확인 -->
+	<select id="selectKakao" parameterType="string" resultType="member">
+		select * from member where id = #{userID}
+	</select>
+	
 	<insert id="insert" parameterType="member">
 		insert into member values(#{id},#{password},#{name},#{tel},#{email},#{image},sysdate,'n','n','n')
+	</insert>
+	
+	<!-- 1:1문의 게시글 입력 -->
+	<insert id="insertQnA">
+		insert into qna values(#{q_no} , #{q_title} , #{q_content} , sysdate , #{id})
 	</insert>
 	
 	<!-- 취소내역 입력 -->
 	<insert id="insertCancle" parameterType="cancle" >
 		insert into cancle values(#{ca_no} , #{ca_option} , #{ca_content} , #{b_no})
+	</insert>
+	
+	<!-- 카카오ID없을시 insert -->
+	<insert id="insertKakao" parameterType="Kakao">
+		insert into member (id,name,image)
+		values(#{userID} , #{nickName} , #{profile_image})
 	</insert>
 	
 	<!-- 구매취소 n => y 변경 -->
@@ -78,5 +114,15 @@
 	<update id="delete" parameterType="string">
 		update member set del = 'y' where id = #{id}
 	</update>
+	
+	<!-- QnA 게시글 수정 -->
+	<update id="QnAUpdate" parameterType="qna">
+		update qna set q_title = #{q_title} , q_content = #{q_content} where q_no = #{q_no}
+	</update>
+	
+	<!-- QnA 문의 삭제 -->
+	<delete id="deleteQnA" parameterType="integer">
+		delete from qna where q_no = #{q_no}
+	</delete>
 	
 </mapper>

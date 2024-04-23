@@ -17,7 +17,7 @@ public class SessionChk implements HandlerInterceptor {
 	  //session을 읽어서 
 	 if(session == null || session.getAttribute("id") == null) {
 	  //id가있는지 체크한뒤 없으면 
-	  response.sendRedirect("/main"); //loginForm으로 보내 
+	  response.sendRedirect("/loginForm"); //main으로 보내 
 	  return false; // 혹시나 Session을 체크하는페이지에서 url을통해 페이지이동시 id가없다면 url주소로 이동하지마 
 	  }
 	  

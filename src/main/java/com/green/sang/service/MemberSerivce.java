@@ -7,7 +7,9 @@ import com.green.sang.dto.Academy;
 import com.green.sang.dto.Buy;
 import com.green.sang.dto.Cancle;
 import com.green.sang.dto.Cart;
+import com.green.sang.dto.Kakao;
 import com.green.sang.dto.Member;
+import com.green.sang.dto.QnA;
 
 public interface MemberSerivce {
 
@@ -44,6 +46,24 @@ public interface MemberSerivce {
 	int updateCancle_Stop(int b_no);
 
 	List<Cart> selectWishList(String id);
+
+	int insertQnA(QnA qna);
+
+	int select_Max_QnA_No(String id);
+
+	List<QnA> selectQnAList(String id);
+
+	int deleteQnA(int q_no);
+
+	QnA selectQnA(int q_no);
+
+	int QnAUpdate(QnA qna);
+
+	int select_Max_Wish_No(String id);
+
+	Member selectKakao(String id);
+
+	void insertKakao(Kakao kakao);
 
 
 

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+	<th:block th:insert="~{/header.html::header}"></th:block>
     <meta charset="UTF-8">
     <title>1:1 문의작성</title>
     <!-- include libraries(jQuery, bootstrap) -->
@@ -13,15 +14,30 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
 </head>
 <body style=" margin: 0 auto;">
-<span style="font-size: 40px;">1:1 문의작성</span>	
-<div style="position: relative; float: right; top: 25px;">
-	<a style="background: white; color:black; border:1px solid gray; padding: 10px;">취소</a>
-	<button style="background: blue; color: white">작성</button>
-</div>
-<hr>
-<form action="QnAWrite">
-	<input type="text" name="title" required="required" autofocus="autofocus">
-	<div id="summernote" name="QnAContent"></div>
+<span th:if="${qnaItem} == null" style="font-size: 40px;">1:1 문의작성</span>	
+<span th:if="${qnaItem} != null" style="font-size: 40px;">[[${qnaItem.q_no}]]번 문의 수정</span>	
+
+<!-- 수정아닐경우 -->
+<form th:if="${qnaItem} == null" action="QnAWhite">
+	<div style="position: relative; float: right; top: -50px;">
+		<a style="background: white; color:black; border:1px solid gray; padding: 10px;">취소</a>
+		<button style="background: blue; color: white; padding: 7px;">작성</button>
+	</div>
+	<hr>
+	<input class="form-control" type="text" name="q_title" required="required" autofocus="autofocus" placeholder="제목을 입력해주세요">
+	<textarea id="summernote" name="q_content"></textarea>
+</form>
+
+<!-- 수정일경우 -->
+<form th:if="${qnaItem} != null" action="QnAUpdate">
+	<input type="hidden" name="q_no" th:value="${qnaItem.q_no}">
+	<div style="position: relative; float: right; top: -50px;">
+		<a style="background: white; color:black; border:1px solid gray; padding: 10px;">취소</a>
+		<button style="background: blue; color: white; padding: 7px;">작성</button>
+	</div>
+	<hr>
+	<input th:if="${qnaItem} != null" class="form-control" type="text" name="q_title" required="required" autofocus="autofocus" th:value="${qnaItem.q_title}">
+	<textarea th:if="${qnaItem} != null" id="summernote" name="q_content">[[${qnaItem.q_content}]]</textarea>
 </form>
 
 <script>
