@@ -40,7 +40,7 @@
 	
 	<!-- 취소번호 Max 값 추출 -->
 	<select id="select_Max_CaNo">
-		select nvl(max(ca_no),0)+1 from cancle
+		select nvl(max(ca_no),0)+1 from cancle_buy
 	</select>
 	
 	<!-- 위시리스트 조회 -->
@@ -73,6 +73,11 @@
 		select * from member where id = #{userID}
 	</select>
 	
+	<!-- 주문 취소 완료된 내역 조회 -->
+	<select id="selectCancleList" parameterType="string" resultType="buy">
+		select * from buy where id=#{id} and cancle = 'y'
+	</select>
+	
 	<insert id="insert" parameterType="member">
 		insert into member values(#{id},#{password},#{name},#{tel},#{email},#{image},sysdate,'n','n','n')
 	</insert>
@@ -84,7 +89,7 @@
 	
 	<!-- 취소내역 입력 -->
 	<insert id="insertCancle" parameterType="cancle" >
-		insert into cancle values(#{ca_no} , #{ca_option} , #{ca_content} , #{b_no})
+		insert into cancle_buy values(#{ca_no} , #{ca_option} , #{ca_content} , #{b_no})
 	</insert>
 	
 	<!-- 카카오ID없을시 insert -->
@@ -93,9 +98,9 @@
 		values(#{userID} , #{nickName} , #{profile_image})
 	</insert>
 	
-	<!-- 구매취소 n => y 변경 -->
+	<!-- 구매취소요청 n => r 변경 , 관리자 구매취소승인 r => y 변경 -->
 	<update id="updateCancle" parameterType="integer">
-		update buy set cancle = 'y' where b_no = #{b_no}
+		update buy set cancle = 'r' where b_no = #{b_no}
 	</update>
 	
 	<!-- 취소철회 y => n 변경 -->
@@ -108,7 +113,10 @@
 	</update>
 	
 	<update id="update" parameterType="member">
-		update member set name = #{name} , password = #{password} , tel = #{tel} where id = #{id}
+		update member set name = #{name}
+		<if test="password != null and tel != null">
+			,password = #{password} , tel = #{tel}
+		</if> where id = #{id}
 	</update>
 	
 	<update id="delete" parameterType="string">
@@ -117,7 +125,7 @@
 	
 	<!-- QnA 게시글 수정 -->
 	<update id="QnAUpdate" parameterType="qna">
-		update qna set q_title = #{q_title} , q_content = #{q_content} where q_no = #{q_no}
+		update qna set q_title = #{q_title} , q_content = #{q_content} , q_date = sysdate where q_no = #{q_no}
 	</update>
 	
 	<!-- QnA 문의 삭제 -->

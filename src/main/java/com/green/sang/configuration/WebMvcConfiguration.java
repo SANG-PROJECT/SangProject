@@ -17,7 +17,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer{
 	public void addInterceptors(InterceptorRegistry registry) {	
 		List<String> list = new ArrayList<>(); // 1. 리스트에 세션체크할 URL을 담는다
 		list.add("/**/mypage"); list.add("/**/kakaoMypage");
-		list.add("/**/kakaomain");
+		list.add("/**/kakaomain"); list.add("/**/staff");
 		
 		
 		//세션체크할 URL을 담은 list객체로 세션체크

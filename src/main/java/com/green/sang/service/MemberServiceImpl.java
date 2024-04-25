@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.green.sang.dto.Academy;
 import com.green.sang.dto.Buy;
-import com.green.sang.dto.Cancle;
+import com.green.sang.dto.Cancle_Buy;
 import com.green.sang.dto.Cart;
 import com.green.sang.dto.Kakao;
 import com.green.sang.dto.Member;
@@ -103,9 +103,9 @@ public class MemberServiceImpl implements MemberSerivce{
 	}
 
 	@Override
-	public int insertCancle(Cancle cancle) {
+	public int insertCancle(Cancle_Buy Cancle_Buy) {
 		
-		return mm.insertCancle(cancle);
+		return mm.insertCancle(Cancle_Buy);
 	}
 
 	@Override
@@ -179,6 +179,7 @@ public class MemberServiceImpl implements MemberSerivce{
 		mm.insertKakao(kakao);
 		
 	}
+
 
 
 }

@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.green.sang.dto.Academy;
 import com.green.sang.dto.Buy;
-import com.green.sang.dto.Cancle;
+import com.green.sang.dto.Cancle_Buy;
 import com.green.sang.dto.Cart;
 import com.green.sang.dto.Kakao;
 import com.green.sang.dto.Member;
@@ -128,17 +128,17 @@ public class MemberController {
 			@RequestParam(value = "b_no", required = false) Integer b_no) {
 		Object idObject = session.getAttribute("id");
 		String id = "";
-		String kakaoImgChk = "";
+		String kakaoChk = "";
 		
 		if(idObject instanceof Long) {
 			id = String.valueOf(idObject);
 			System.out.println("변환된 id = " + id);
-			kakaoImgChk = "true";
+			kakaoChk = "true";
 			
 		}else {
 			id = (String) session.getAttribute("id");
 			System.out.println("일반아이디 : " + id);	
-			kakaoImgChk = "false";
+			kakaoChk = "false";
 		}
 		
 		if (menu == null || menu.equals("")) menu = "order";
@@ -147,7 +147,6 @@ public class MemberController {
 		System.out.println("조회된 사진 : " + member.getImage());
 
 		List<Buy> buyList = ms.selectBuyList(id);
-
 		List<Academy> academyList = new ArrayList<>();
 
 		for (Buy buyItem : buyList) {
@@ -162,6 +161,13 @@ public class MemberController {
 				academy2.setB_date(buyItem.getB_date());
 				// 저장된 아카데미객체 리스트로추가
 				academyList.add(academy2);
+				System.out.println("승인여부 : " +academy2.getCancle() );
+				// 취소완료 되지 않았으면 취소조회에 보이지않기위해 추가
+				if(academy2.getCancle().equals("y")) {
+					String cancleSuccess = "true";
+					model.addAttribute("cancleSuccess",cancleSuccess);
+				}
+			
 			}
 		}
 
@@ -211,33 +217,34 @@ public class MemberController {
 			model.addAttribute("count_QnA_No" , count_QnA_No); //sql에서 max넘버 +1하기때문에 -1해서 맞춘다.
 			model.addAttribute("qnalist",qnalist);
 		}
+	
 
 		model.addAttribute("academyList", academyList);
 		model.addAttribute("buyList", buyList);
 		model.addAttribute("member", member);
 		model.addAttribute("id", id);
 		model.addAttribute("menu", menu);
-		model.addAttribute("kakaoImgChk",kakaoImgChk);
+		model.addAttribute("kakaoChk",kakaoChk);
 		return "member/mypage";
 	}
 
 	@GetMapping("cancleSelect")
-	public String cancleSelect(Model model , Cancle cancle , Buy buy) {
+	public String cancleSelect(Model model , Cancle_Buy Cancle_Buy , Buy buy) {
 		int result = 0;
 		
-		if(cancle.getCa_content() != null && cancle.getCa_option() != null) {
+		if(Cancle_Buy.getCa_content() != null && Cancle_Buy.getCa_option() != null) {
 		  
 			int maxCancle_No = ms.select_Max_CaNo();
 			System.out.println("Max 취소번호 : " + maxCancle_No);
 			int b_no = buy.getB_no();
 			System.out.println("B_no : " + b_no);
 			
-			cancle.setCa_no(maxCancle_No);
-			cancle.setB_no(b_no);
+			Cancle_Buy.setCa_no(maxCancle_No);
+			Cancle_Buy.setB_no(b_no);
 
-			result = ms.insertCancle(cancle);
+			result = ms.insertCancle(Cancle_Buy); //cancle_buy테이블에 추가
 			try {
-				ms.updateCancle(b_no);
+				ms.updateCancle(b_no); // 취소요청 n => r (request 약자) 
 			} catch (Exception e) {
 				System.out.println("구매취소 업데이트 쿼리중 에러" + e.getMessage());
 			}
@@ -264,14 +271,20 @@ public class MemberController {
 	@PostMapping("update")
 	public String update(Model model, Member member, MultipartHttpServletRequest mhr) throws IOException {
 		int result = 0;
-
+		System.out.println("닉네임 : " + member.getName());
+		System.out.println("암호 : " + member.getPassword());
+		System.out.println("전화번호 : " + member.getTel());
+		
 		Member member2 = ms.select(member.getId());
 
 		if (member2 != null) {
 			if (member.getFile() == null || member.getFile().isEmpty()) {
 				member.setImage(member2.getImage()); // 이미지 수정없이 수정할시 기존이미지
-				String encPass = bpe.encode(member.getPassword()); // 저장될 암호를 암호화
-				member.setPassword(encPass); // dto에 암호화 암호를 저장
+				if(member.getPassword() != null) {
+					String encPass = bpe.encode(member.getPassword()); // 저장될 암호를 암호화
+					member.setPassword(encPass); // dto에 암호화 암호를 저장			
+					
+				}
 			} else {
 				String originalFileName = member.getFile().getOriginalFilename(); // 업로드용 file에담긴 file명을 가져온다.
 				System.out.println("originalFileName : " + originalFileName);
@@ -288,8 +301,13 @@ public class MemberController {
 
 				String encPass = bpe.encode(member.getPassword()); // 저장될 암호를 암호화
 				member.setPassword(encPass); // dto에 암호화 암호를 저장
-
 			}
+			
+			System.out.println("닉네임 : " + member.getName());
+			System.out.println("암호 : " + member.getPassword());
+			System.out.println("전화번호 : " + member.getTel());
+			System.out.println("아이디 : " + member.getId());
+			
 			result = ms.update(member);
 
 		} else

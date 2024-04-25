@@ -25,6 +25,7 @@ create table member (
 	admin char(1) default 'N'		-- 관리자 구분
 );
 select * from member;
+update member set name='홍길동' where id='user';
 
 INSERT INTO member (id, password, name, tel, email, image, reg_date, del, snt, admin)
 VALUES (
@@ -158,7 +159,7 @@ insert into buy values(2,sysdate,'n',2,1,'user');
 insert into buy values(3,sysdate,'n',2,1,'3436353406');
 select * from buy;
 update buy set c_count = 2 where b_no = 1;
-update buy set cancle = 'n' where b_no = 2;
+update buy set cancle = 'y' where b_no = 2;
 
 -- 찜
 create table love (
@@ -214,14 +215,39 @@ create table notice (
 );
 
 -- 강사 소개
+drop table staff;
 create table staff (
 	st_no number(20) primary key,				-- 강사소개 번호
 	st_title varchar2(100),						-- 강사소개 제목
 	st_image varchar2(200),						-- 강사소개 사진
 	st_content varchar2(2000),					-- 강사소개 내용
+	st_name varchar2(20),						-- 강사소개 이름
+	st_type varchar2(20),						-- 강사소개 강의타입
 	st_date date,								-- 등록 일자
 	id varchar2(20),							-- 아이디 (fk)
 	foreign key(id) references member(id)
+);
+select * from staff;
+			
+insert into staff values(
+18,
+'테스트 강사소개 제목',
+'test.PNG',
+'<p>홍익대학교 시각디자인과를 졸업하였고, HILLS에서 일러스트레이션, 그림책 공부를 하였다. 그림책을 쓰고 그리고 몸으로 읽어 주기를 좋아하고, 사람들과 만나 그림책 세상 속에서 함께 놀고 싶어 하는 그림책 작가이다.</p>
+<p>그림책 <우리 집에 사는 신들>, <덩쿵따 소리 씨앗>을 쓰고 그렸고, <서로를 보다>, <열매 하나>, <아니야>등에 그림을 그렸다. <우리 집에 사는 신들> 1인극 공연을 하고 있다.</p>
+<p>그림책면사무소 소속, 독립 공연자 및 예술 교육자로 활동 중이다.</p><p>
+<p>[주요 활동]</p>
+<p>2020 KBBY <덩쿵따 소리 씨앗> 한-러 국제 교류프로젝트 작가 선정</p>
+<p>2019 삼각산시민청 다운 전시 <덩쿵따 소리 씨앗>전 / 삼각산시민청</p>
+<p>2019 작가의 방 <물음표 극장> 전시 및 공연 / 주엽 어린이 도서관</p>
+<p>2014 『하이 서울 페스티벌』 그림책 작가와 함께하는 이야기 드로잉 쇼</p>
+<p>2013 국립극단 한 여름밤의 작은 극장 <우리 집에 사는 신들> 공연</p>
+<p>2013 <서로를 보다> BIB 한국 대표 그림책 선정</p>
+<p>2013 <덩쿵따 소리 씨앗>우수출판기획안 최우수상 수상</p>', 
+'테스트이름',
+'테스트 작가',
+sysdate,
+'user'
 );
 
 -- 참여
@@ -261,18 +287,19 @@ create table detail(
 );
 
 --+구매취소내역
-create table cancle(
+drop table cancle_buy;
+create table cancle_buy(
 	ca_no number(20) primary key,
 	ca_option varchar2(100),
 	ca_content varchar2(1000),
 	b_no number(20),
 	foreign key(b_no) references buy(b_no)
 );
-select * from cancle;
+select * from cancle_buy;
 
 --+ 1:1문의
-drop table QnA;
-create table QnA(
+drop table qna;
+create table qna(
 	q_no number(20) primary key,
 	q_title varchar2(100),
 	q_content varchar2(2000),

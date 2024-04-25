@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.green.sang.dto.Academy;
 import com.green.sang.dto.Buy;
-import com.green.sang.dto.Cancle;
+import com.green.sang.dto.Cancle_Buy;
 import com.green.sang.dto.Cart;
 import com.green.sang.dto.Kakao;
 import com.green.sang.dto.Member;
@@ -39,7 +39,7 @@ public interface MemberSerivce {
 
 	int select_Max_CaNo();
 
-	int insertCancle(Cancle cancle);
+	int insertCancle(Cancle_Buy Cancle_Buy);
 
 	void updateCancle(int b_no);
 
@@ -64,6 +64,8 @@ public interface MemberSerivce {
 	Member selectKakao(String id);
 
 	void insertKakao(Kakao kakao);
+
+	
 
 
 

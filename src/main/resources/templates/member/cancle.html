@@ -9,13 +9,13 @@
 <body>
 	<div th:if="${result} > 0">
 		<script type="text/javascript">
-			alert("취소되었습니다")
+			alert("취소 요청 완료");
 			location.href="mypage";
 		</script>
 	</div>
 	<div th:if="${result} <= 0">
 		<script type="text/javascript">
-			alert("취소과정에서 에러발생")
+			alert("취소과정에서 에러발생");
 			history.back();
 		</script>
 	</div>

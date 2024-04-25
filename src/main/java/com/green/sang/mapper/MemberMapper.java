@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.green.sang.dto.Academy;
 import com.green.sang.dto.Buy;
-import com.green.sang.dto.Cancle;
+import com.green.sang.dto.Cancle_Buy;
 import com.green.sang.dto.Cart;
 import com.green.sang.dto.Kakao;
 import com.green.sang.dto.Member;
@@ -42,7 +42,7 @@ public interface MemberMapper {
 
 	int select_Max_CaNo();
 
-	int insertCancle(Cancle cancle);
+	int insertCancle(Cancle_Buy Cancle_Buy);
 
 	int updateCancle(int b_no);
 

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}">
+<th:block th:insert="~{/header.html::header}"></th:block>
+<head>
+
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+.staffBox{
+	margin-top:100px;
+
+}
+.staff_intro{
+	text-align: center;
+}
+.staff_Line{
+	width: 50px; 
+	height: 2px; 
+	background: black; 
+	margin: 30px auto;
+}
+.staff_image{
+	text-align: center;
+	margin: 50px auto;
+}
+.staff_image>img{
+	width: 650px;
+	height: 650px;
+}
+.staff_content{
+	width: 900px;
+	background: lightgray;
+	margin: 50px auto;
+}
+.staff_content b{
+	font-size: 30px;
+	color: black;
+} 
+
+</style>
+
+<script type="text/javascript">
+$(function(){
+	$(".nextNo").click(function(){
+		let st_no = this.getAttribute("data-st_no");
+		st_no = parseInt(st_no,10);
+		st_no++;
+		location.href="staff_Detail?st_no=" +st_no;
+	});
+	
+	$(".beforeNo").click(function(){
+		let st_no = this.getAttribute("data-st_no");
+		st_no = parseInt(st_no,10);
+		st_no--;
+		location.href="staff_Detail?st_no=" +st_no;
+	});
+});
+
+</script>
+</head>
+<body>
+	<div layout:fragment="content">
+		<div class="staffBox">
+			<div class="staff_intro">
+				<h4>강사소개</h4>
+				<div class="staff_Line"></div>
+				<h2>[[${staff.st_name}]] 강사님</h2>
+			</div>
+			
+			<div class="staff_image">
+				<img alt="없댜" th:src="@{'/upload/teacher/' + ${staff.st_image}}">
+			</div>
+			
+			<div class="staff_content">
+				<p><span><b>[[${staff.st_name}]](본명)</b> | [[${staff.st_type}]]</span></p>
+				<p>
+				<p><span th:utext="${staff.st_content}"></span></p>
+			</div>
+		</div>
+		
+		<a href="#" class="beforeNo" th:attr="data-st_no=${staff.st_no}">이전번호로 이동</a>
+		<a href="#" class="nextNo" th:attr="data-st_no=${staff.st_no}">다음번호로 이동</a>
+		<a href="staff" class="menu">메뉴</a>
+	</div>							
+</body>
+</html>
