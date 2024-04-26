@@ -31,13 +31,37 @@
 }
 .staff_content{
 	width: 900px;
-	background: lightgray;
 	margin: 50px auto;
 }
 .staff_content b{
 	font-size: 30px;
 	color: black;
+}
+.staff_menu{
+	width: 900px;
+	margin: 50px auto;
+}
+.UpDownBtn a{
+	text-decoration: none;
+	color: gray;
+	font-size:15px;
+	margin-left: 10px;
+	
 } 
+.staff_menu img:hover{
+	cursor: pointer;
+}
+.menuBox{
+	width: 900px;
+	margin: 20px auto;
+}
+#StaffListBtn{
+	background: white;
+	color:blue;
+	border: 1px solid blue;
+	padding: 10px;
+	text-decoration: none;
+}
 
 </style>
 
@@ -56,6 +80,10 @@ $(function(){
 		st_no--;
 		location.href="staff_Detail?st_no=" +st_no;
 	});
+	
+	$(".staff_menu img").click(function(){
+		$(this).next("a").click();
+	});
 });
 
 </script>
@@ -66,23 +94,37 @@ $(function(){
 			<div class="staff_intro">
 				<h4>강사소개</h4>
 				<div class="staff_Line"></div>
-				<h2>[[${staff.st_name}]] 강사님</h2>
+				<h2>[[${staff.st_title}]] 강사님</h2>
 			</div>
 			
 			<div class="staff_image">
-				<img alt="없댜" th:src="@{'/upload/teacher/' + ${staff.st_image}}">
+				<img alt="없댜" th:src="@{'/upload/staff/' + ${staff.st_image}}">
 			</div>
 			
 			<div class="staff_content">
-				<p><span><b>[[${staff.st_name}]](본명)</b> | [[${staff.st_type}]]</span></p>
+				<p><span><b>[[${staff.st_title}]]([[${staff.st_name}]])</b> | [[${staff.st_type}]]</span></p>
 				<p>
 				<p><span th:utext="${staff.st_content}"></span></p>
 			</div>
+			
+			<div class="staff_menu">
+				<div class="UpDownBtn" th:if="${beforeStaff} != 'false'">
+					
+					<img alt="upArrow" th:src="@{/images/upArrow.png}">
+					<a href="#" class="beforeNo"th:attr="data-st_no=${staff.st_no}">[[${beforeStaff}]] 강사</a><br>
+				</div>
+				<div class="UpDownBtn" th:if="${nextStaff} != 'false'">
+					<hr>
+					<img alt="downArrow" th:src="@{/images/downArrow.png}">
+					<a href="#" class="nextNo" th:attr="data-st_no=${staff.st_no}">[[${nextStaff}]] 강사</a><p>
+				</div>
+			</div>
+			<div class="menuBox">
+				<a href="staff" id="StaffListBtn">목록</a>
+			</div>
 		</div>
 		
-		<a href="#" class="beforeNo" th:attr="data-st_no=${staff.st_no}">이전번호로 이동</a>
-		<a href="#" class="nextNo" th:attr="data-st_no=${staff.st_no}">다음번호로 이동</a>
-		<a href="staff" class="menu">메뉴</a>
+		
 	</div>							
 </body>
 </html>

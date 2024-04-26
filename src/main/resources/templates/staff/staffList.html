@@ -107,8 +107,8 @@
 						<span
 							style="color: rgb(255, 255, 255); font-size: 24px; letter-spacing: -1px;">
 							<span style="font-size: 36px;"><strong><span
-									style="color: rgb(255, 255, 255)">강사소개</span></strong></span><br> 상상마당
-							상상마당 아카데미 아티스트 라인업
+									style="color: rgb(255, 255, 255)">강사소개</span></strong></span><br>
+							상상마당 아카데미 아티스트 라인업!
 						</span>
 					</h6>
 				</div>
@@ -125,7 +125,7 @@
 				<div th:each="staff : ${stafflist}">
 					<div>
 						<a th:href="@{/staff_Detail(st_no=${staff.st_no})}">
-							<img alt="강사이미지" th:src="@{'/upload/teacher/'+${staff.st_image}}"
+							<img alt="강사이미지" th:src="@{'/upload/staff/'+${staff.st_image}}"
 							style="width: 250px; height: 250px;">
 						</a>
 					</div>

@@ -63,13 +63,40 @@ public class StaffController {
 		System.out.println("넘어온 번호 : " + staff.getSt_no());
 		
 		Staff staff2 = ss.selectStaff(staff.getSt_no());
-		System.out.println("강사이름 : " + staff2.getSt_name());
-		System.out.println("강사이미지 : " + staff2.getSt_image());
 		
-		if(staff2 != null) 
+		if(staff2 != null) {
+			String nextstaffName = "";
+			String beforestaffName = "";
+			Staff nextstaff = ss.selectStaff(staff.getSt_no()+1);
+			if(nextstaff != null)
+				nextstaffName = nextstaff.getSt_name();
+			else nextstaffName = "false";
+			
+			Staff beforestaff = ss.selectStaff(staff.getSt_no()-1);
+			if(beforestaff != null) 
+				beforestaffName = beforestaff.getSt_name();
+			else beforestaffName = "false";
+			
+			
+			model.addAttribute("beforeStaff",beforestaffName);
+			model.addAttribute("nextStaff",nextstaffName);
 			model.addAttribute("staff" , staff2);
+		}else {
+			
+		}
+		
+		
 		
 		return "staff/staffDetail";
+	}
+	
+	@GetMapping("map")
+	public String map(Model model) {
+		
+		 model.addAttribute("centerLat", 37.566826);
+	     model.addAttribute("centerLng", 126.9786567);
+		
+		return "staff/map";
 	}
 	
 	

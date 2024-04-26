@@ -221,18 +221,18 @@ create table staff (
 	st_title varchar2(100),						-- 강사소개 제목
 	st_image varchar2(200),						-- 강사소개 사진
 	st_content varchar2(2000),					-- 강사소개 내용
-	st_name varchar2(20),						-- 강사소개 이름
-	st_type varchar2(20),						-- 강사소개 강의타입
+	st_name varchar2(50),						-- 강사소개 이름
+	st_type varchar2(100),						-- 강사소개 강의타입
 	st_date date,								-- 등록 일자
 	id varchar2(20),							-- 아이디 (fk)
 	foreign key(id) references member(id)
 );
 select * from staff;
-			
+alter table staff modify st_name varchar2(50);	
 insert into staff values(
-18,
-'테스트 강사소개 제목',
-'test.PNG',
+1,
+'오리',
+'staff1.png',
 '<p>홍익대학교 시각디자인과를 졸업하였고, HILLS에서 일러스트레이션, 그림책 공부를 하였다. 그림책을 쓰고 그리고 몸으로 읽어 주기를 좋아하고, 사람들과 만나 그림책 세상 속에서 함께 놀고 싶어 하는 그림책 작가이다.</p>
 <p>그림책 <우리 집에 사는 신들>, <덩쿵따 소리 씨앗>을 쓰고 그렸고, <서로를 보다>, <열매 하나>, <아니야>등에 그림을 그렸다. <우리 집에 사는 신들> 1인극 공연을 하고 있다.</p>
 <p>그림책면사무소 소속, 독립 공연자 및 예술 교육자로 활동 중이다.</p><p>
@@ -244,8 +244,8 @@ insert into staff values(
 <p>2013 국립극단 한 여름밤의 작은 극장 <우리 집에 사는 신들> 공연</p>
 <p>2013 <서로를 보다> BIB 한국 대표 그림책 선정</p>
 <p>2013 <덩쿵따 소리 씨앗>우수출판기획안 최우수상 수상</p>', 
-'테스트이름',
-'테스트 작가',
+'이유정',
+'그림책 작가',
 sysdate,
 'user'
 );
