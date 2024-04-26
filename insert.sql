@@ -12,9 +12,9 @@ VALUES (
     'N', -- 수강생/강사 구분 (기본값 'N')
     'N' -- 관리자 구분 (기본값 'N')
 );
-
 -- Category
 insert into category values(1,'free');
+
 
 -- Academy Insert
 INSERT INTO academy (a_no, title, price, intro, tag, schedule, a_name, place,inwon,turn, request, onoff, image, count, a_date, id, ct_no)
@@ -65,12 +65,12 @@ insert into cart values(1,1,'user',1);
 -- Buy Insert
 insert into buy values(1,sysdate,'n',1,1,'user');
 insert into buy values(2,sysdate,'n',2,1,'user');
-insert into buy values(3,sysdate,'n',2,1,'3436353406');
+--insert into buy values(3,sysdate,'n',2,1,'3436353406'); -- 카카오로그인시 재기아이디
 
 -- Love Insert
-insert into love values(3,'3436353406',1)
+--insert into love values(3,'3436353406',1) -- 카카오 로그인 시 재기아이디
 insert into love values(2,'user',2)
-
+select * from staff;
 -- Staff Insert
 insert into staff values(
 1,'오리','staff1.png',
