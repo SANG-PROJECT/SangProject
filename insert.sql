@@ -1,3 +1,77 @@
+-- Member Insert
+INSERT INTO member (id, password, name, tel, email, image, reg_date, del, snt, admin)
+VALUES (
+    'user', -- 아이디
+    '$2a$10$npapJwUNY/sf4pJVvVRbeOFKxDWV66ZV80VFOUbnTrqkuPDyNmwf.', -- 암호 (해시된 암호로 변경해야 함)
+    '홍길동', -- 이름
+    '010-1234-5678', -- 연락처
+    'user@example.com', -- 이메일
+    'user_image.jpg', -- 회원 이미지 파일 경로
+    TO_DATE('2024-04-11', 'YYYY-MM-DD'), -- 가입일자 (예시로 현재 날짜로 설정)
+    'N', -- 회원 삭제 여부 (기본값 'N')
+    'N', -- 수강생/강사 구분 (기본값 'N')
+    'N' -- 관리자 구분 (기본값 'N')
+);
+
+-- Category
+insert into category values(1,'free');
+
+-- Academy Insert
+INSERT INTO academy (a_no, title, price, intro, tag, schedule, a_name, place,inwon,turn, request, onoff, image, count, a_date, id, ct_no)
+VALUES (
+    1,
+    '[2024 상상마당 홈커밍데이] 윤승준 사진작가',
+    0,
+    '윤승준 사진작가의 다양한 시선을 담아 낸 사진 이야기 그리고',
+    '#사진 #릴레이특강 #멘토',
+    '2024년 4월 26일(금) 19:30-21:00',
+    '윤승준',
+    '10',
+    '3',
+    'KT&G',
+    '4월 5일(금)',
+    'N',
+    't1.png',
+    8,
+    TO_DATE('2024-04-11', 'YYYY-MM-DD'),
+    'user',
+    1
+);
+
+INSERT INTO academy (a_no, title, price, intro, tag, schedule, a_name, place,inwon,turn, request, onoff, image, count, a_date, id, ct_no)
+VALUES (
+    2, 
+    '[2024 상상마당 홈커밍데이] 윤승준 사진작가2', 
+    0,
+    '윤승준 사진작가의 다양한 시선을 담아 낸 사진 이야기 그리고', 
+    '#사진 #릴레이특강 #멘토', 
+    '2024년 4월 26일(금) 19:30-21:00',
+    '윤승준',
+    '15',
+    '4',
+    'KT&G ',
+    '4월 5일(금)',
+    'N', 
+    't2.png',
+    8,
+    TO_DATE('2024-04-11', 'YYYY-MM-DD'),
+    'user',
+    1
+);
+
+-- Cart Insert
+insert into cart values(1,1,'user',1);
+
+-- Buy Insert
+insert into buy values(1,sysdate,'n',1,1,'user');
+insert into buy values(2,sysdate,'n',2,1,'user');
+insert into buy values(3,sysdate,'n',2,1,'3436353406');
+
+-- Love Insert
+insert into love values(3,'3436353406',1)
+insert into love values(2,'user',2)
+
+-- Staff Insert
 insert into staff values(
 1,'오리','staff1.png',
 '<p>홍익대학교 시각디자인과를 졸업하였고, HILLS에서 일러스트레이션, 그림책 공부를 하였다. 그림책을 쓰고 그리고 몸으로 읽어 주기를 좋아하고, 사람들과 만나 그림책 세상 속에서 함께 놀고 싶어 하는 그림책 작가이다.</p>
@@ -138,4 +212,10 @@ insert into staff values(
 '<p>Piano Shoegazer, 피아노 슈게이저 건반 연주를 활용해 슈게이징, 노이즈, 앰비언트, 브레이크코어 음악을 연주한다. 파편화된 기억과 노스탤지어를 은유적 사운드로 표현한다. 무너지고 쏟아지고 부서지는 텍스쳐를 구성하는 일에 몰두하고 있다. 영화 콘크리트 유토피아 음악팀에서 음악 작업을 맡았고 장명선 2집 [천사의 몫]을 프로듀스 했다. 2023년 11월 24일 첫 정규앨범 [시지프스 해피]를 발매했다.</p>', 
 '피아노 슈게이저','음악가',sysdate,'user'
 );
+insert into staff values(
+20,'안지선','staff20.png',
+'<p>"안심팩토리"를 운영 중인 지선입니다. 작고 귀여운 것들을 좋아해요. 이모티콘과 일러스트를 그리고, 3D모델링을 하고, 아트토이를 만들고 있습니다.</p>', 
+'안지선','아트토이 작가',sysdate,'user'
+);
+
 
